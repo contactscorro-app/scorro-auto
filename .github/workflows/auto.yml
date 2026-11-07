@@ -1,0 +1,72 @@
+name: auto
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+concurrency:
+  group: scorro-auto
+  cancel-in-progress: false
+permissions:
+  contents: read
+jobs:
+  passe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      SCORRO_CI: '1'
+      SCORRO_ENVOIS: ${{ vars.SCORRO_ENVOIS }}
+      SCORRO_PROXY: ${{ secrets.SCORRO_PROXY }}
+      BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+      BUFFER_CHANNEL_INSTAGRAM: ${{ secrets.BUFFER_CHANNEL_INSTAGRAM }}
+      BUFFER_CHANNEL_YOUTUBE: ${{ secrets.BUFFER_CHANNEL_YOUTUBE }}
+      BUFFER_CHANNEL_TIKTOK: ${{ secrets.BUFFER_CHANNEL_TIKTOK }}
+      VIDEOS_REPO: ${{ vars.VIDEOS_REPO }}
+      ETAT_REPO: ${{ vars.ETAT_REPO }}
+      GH_TOKEN: ${{ secrets.DEPOTS_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ vars.ETAT_REPO }}
+          token: ${{ secrets.DEPOTS_TOKEN }}
+          path: etat-prive
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Restaurer l'état
+        run: |
+          mkdir -p etat rapports a-publier out
+          [ -d etat-prive/etat ] && cp -a etat-prive/etat/. etat/ || true
+          [ -f etat-prive/publications.log ] && cp etat-prive/publications.log . || true
+          [ -f etat-prive/resume-du-jour.txt ] && cp etat-prive/resume-du-jour.txt . || true
+          [ -f etat-prive/ERREURS.txt ] && cp etat-prive/ERREURS.txt a-publier/ || true
+          [ -d etat-prive/rapports ] && cp -a etat-prive/rapports/. rapports/ || true
+          rm -f etat/auto.lock
+      - name: Passe
+        run: node scripts/auto.mjs
+      - name: Sauvegarder l'état
+        if: always()
+        run: |
+          mkdir -p etat-prive/etat etat-prive/rapports
+          rm -f etat/auto.lock
+          cp -a etat/. etat-prive/etat/ || true
+          cp publications.log resume-du-jour.txt etat-prive/ 2>/dev/null || true
+          cp a-publier/ERREURS.txt etat-prive/ 2>/dev/null || true
+          cp -a rapports/. etat-prive/rapports/ 2>/dev/null || true
+          cd etat-prive
+          git config user.name "scorro-bot"
+          git config user.email "295870407+contactscorro-app@users.noreply.github.com"
+          git add -A
+          if ! git diff --cached --quiet; then
+            git commit --amend --no-edit -q || git commit -q -m "état"
+            git push --force -q
+          fi
+      - name: Notifications
+        if: always()
+        run: |
+          [ -f out/notifications.jsonl ] || exit 0
+          while IFS= read -r ligne; do
+            titre=$(echo "$ligne" | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>console.log(JSON.parse(s).titre))")
+            texte=$(echo "$ligne" | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>console.log(JSON.parse(s).texte))")
+            gh issue create --repo "$ETAT_REPO" --title "$titre" --body "$texte"
+          done < out/notifications.jsonl

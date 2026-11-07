@@ -1,0 +1,40 @@
+{
+ "plans": [
+  {
+   "clip": "direct",
+   "texte": "Le direct, but après but",
+   "duree": 4.71
+  },
+  {
+   "clip": "accueil",
+   "texte": "Tout le foot. Dans ta poche.",
+   "duree": 3.69
+  },
+  {
+   "clip": "fiche",
+   "texte": "Chaque but. Chaque compo.",
+   "duree": 4.3
+  },
+  {
+   "clip": "classement",
+   "texte": "Les classements, toujours à jour",
+   "duree": 1.47
+  },
+  {
+   "clip": "compar",
+   "texte": "Qui est le meilleur ? Les chiffres tranchent.",
+   "duree": 1.47
+  },
+  {
+   "clip": "ligue",
+   "texte": "Défie tes potes",
+   "duree": 1.52
+  },
+  {
+   "clip": "pronos",
+   "texte": "Le meilleur prono, c'est toi ?",
+   "duree": 2.61
+  }
+ ],
+ "fin": "Dispo sur l'App Store"
+}

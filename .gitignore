@@ -1,0 +1,15 @@
+.env*
+etat/
+etat-prive/
+a-publier/
+brouillons/
+out/
+node_modules/
+rapports/
+publications.log
+resume-du-jour.txt
+public/sons/
+public/grain.png
+public/logos/
+public/joueurs/
+data/*.json.local
