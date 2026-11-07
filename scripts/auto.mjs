@@ -308,7 +308,7 @@ if (hhmmParis(maintenant) >= '22:30' && etat.resume !== jourParis(maintenant) &&
   etat.resume = j;
 }
 // Ménage des vidéos en ligne : les MP4 de la publication « videos » (≈ 45 Mo chacun) sont supprimés après 4 jours, une fois par jour. Buffer les a lus depuis longtemps.
-if (etat.nettoyage !== jourParis(maintenant) && !drapeau('sans-rendu')) {
+if (auto && etat.nettoyage !== jourParis(maintenant) && !drapeau('sans-rendu')) { // jamais en essai à blanc (SCORRO_ENVOIS=off) : l'état peut y être vide, donc ne protègerait rien
   try {
     const envFichier = fs.existsSync('.env') ? Object.fromEntries(fs.readFileSync('.env', 'utf8').split('\n').filter((l) => /^[A-Z_]+=/.test(l)).map((l) => { const i = l.indexOf('='); return [l.slice(0, i), l.slice(i + 1).trim()]; })) : {};
     const depot = process.env.VIDEOS_REPO ?? envFichier.VIDEOS_REPO;
