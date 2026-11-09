@@ -5,6 +5,8 @@ import { spawnSync } from 'node:child_process';
 import { faireLecture, jourParis, heureParis, hhmmParis, taches, permis, creneau, choisirADecaler, planifier, capDuJour, HEURE, MIN } from './decider.mjs';
 const jourPlusJ = (jour, n) => jourParis(Date.parse(`${jour}T12:00:00Z`) + n * 24 * HEURE);
 import { attacherClassements } from './classements.mjs';
+import { echecLecture } from './decider.mjs';
+import { notifier as notifierCanaux, silenceAnormal, rappelDeLaVeille } from './notifier.mjs';
 import { controler } from './controler.mjs';
 import { legende } from './legende.mjs';
 const arg = (n) => process.argv.find((a) => a.startsWith(`--${n}=`))?.split('=').slice(1).join('=');
@@ -154,10 +156,7 @@ try {
 // Fin de match vue : l'instant où le calendrier le dit fini pour la première fois (sert aux horaires d'après-match).
 for (const m of etat.calendrier?.matchs ?? []) if (['FT', 'AET', 'FT_PEN'].includes(m.etat) && !etat.finis[m.id]) etat.finis[m.id] = maintenant;
 // Notification : notification macOS sur le Mac ; sur le serveur, une ligne dans out/notifications.jsonl que le workflow transforme en issue GitHub (donc en e-mail).
-function notifier(titre, texte, fichier) {
-  if (CI) { fs.mkdirSync('out', { recursive: true }); fs.appendFileSync('out/notifications.jsonl', JSON.stringify({ titre, texte, fichier: fichier ?? null }) + '\n'); return; }
-  spawnSync('osascript', ['-e', `display notification "${texte.replace(/"/g, "'")}" with title "${titre.replace(/"/g, "'")}"`]);
-}
+const notifier = (titre, texte, fichier, o) => notifierCanaux(titre, texte, fichier, { ci: CI, ...o });
 // SCORRO_ENVOIS=off : aucun envoi (essai à blanc sur le serveur). SCORRO_CI=1 : mode GitHub Actions (vidéos mises en ligne dès le rendu, légendes gardées dans l'état).
 const CI = !!process.env.SCORRO_CI;
 const auto = ouvert && pub.mode === 'auto' && process.env.SCORRO_ENVOIS !== 'off';
@@ -193,6 +192,7 @@ if (auto && !drapeau('sans-rendu')) {
         if (p.raison === 'plafond') { erreur(cle, `${reseau} : plafond de ${capDuJour(cfg, jourParis(maintenant))} vidéos atteint aujourd'hui, non publié`); f.restants = f.restants.filter((x) => x !== reseau); }
         continue;
       }
+      if ((f.reessaiApres?.[reseau] ?? 0) > maintenant) continue;
       if (etat.stopEnvois) { console.log('envois arrêtés (échecs Buffer répétés) : voir ERREURS.txt'); break; }
       // Avant-matchs et avant-journées : programmés dans Buffer à l'heure voulue (--quand), la vidéo reste chez Buffer : le Mac peut être éteint ensuite.
       let quand = null;
@@ -224,7 +224,12 @@ if (auto && !drapeau('sans-rendu')) {
       const b = lancer(process.execPath, ['scripts/publier-buffer.mjs', f.fichier, `--reseaux=${reseau}`, ...extra]);
       if (b.ok) { etat.echecsBuffer = 0; etat.publiees ??= {}; etat.publiees[cle] ??= maintenant; }
       if (b.ok) { etat.pubs.push({ t: quand ?? maintenant, reseau, video: f.fichier, cle, poids: f.poids, format: f.format, prioritaire: !!f.prioritaire, de: f.de, jusqu: f.jusqu, ...(quand ? { programme: true } : {}) }); journal(reseau, f.fichier, quand ? `${cle} (PROGRAMMÉ pour ${horodate(quand)})` : cle); if (quand) { const l = (b.sortie.split('\n').find((x) => x.startsWith('PROGRAMME')) ?? '').slice(0, 300); if (l) fs.appendFileSync('publications.log', `    vérification Buffer : ${l}\n`); } f.restants = f.restants.filter((x) => x !== reseau); console.log(`📤 ${reseau} : ${f.fichier}`); }
-      else { etat.echecsBuffer = (etat.echecsBuffer ?? 0) + 1; if (etat.echecsBuffer >= 3) { etat.stopEnvois = maintenant; erreur('buffer', `3 échecs d'envoi de suite : envois ARRÊTÉS (aucun nouvel essai). Remettre etat.stopEnvois à null dans etat/auto.json après vérification.`); fs.appendFileSync('publications.log', `${horodate(maintenant)} (Paris) | STOP | échecs Buffer répétés, envois arrêtés | -\n`); notifier('Scorro : ENVOIS ARRÊTÉS', `3 échecs Buffer de suite : plus aucun envoi tant que tu n'as pas vérifié (voir a-publier/ERREURS.txt). Remettre etat.stopEnvois à null ensuite.`, 'a-publier/ERREURS.txt'); } f.echecs[reseau] = (f.echecs[reseau] ?? 0) + 1; erreur(cle, `Buffer ${reseau} (essai ${f.echecs[reseau]}/3) : ${dernier(b.sortie)}`); if (f.echecs[reseau] >= 3) f.restants = f.restants.filter((x) => x !== reseau); }
+      else if (echecLecture(b.sortie) && (f.lectures?.[reseau] ?? 0) < 4) {
+        // « Video could not be read » : souvent passager (fichier pas encore servi par GitHub). Nouvelle tentative dans 10 min, sans compter pour le disjoncteur ; après 4 essais, échec normal.
+        f.lectures ??= {}; f.lectures[reseau] = (f.lectures[reseau] ?? 0) + 1; f.reessaiApres ??= {}; f.reessaiApres[reseau] = maintenant + 10 * MIN;
+        erreur(cle, `Buffer ${reseau} : vidéo illisible côté Buffer, nouvelle tentative dans 10 min (${f.lectures[reseau]}/4)`);
+      }
+      else { if (Object.values(f.echecs).reduce((s, n) => s + n, 0) === 0) etat.echecsBuffer = (etat.echecsBuffer ?? 0) + 1; if (etat.echecsBuffer >= 3) { etat.stopEnvois = maintenant; erreur('buffer', `3 échecs d'envoi de suite : envois ARRÊTÉS (aucun nouvel essai). Remettre etat.stopEnvois à null dans etat/auto.json après vérification.`); fs.appendFileSync('publications.log', `${horodate(maintenant)} (Paris) | STOP | échecs Buffer répétés, envois arrêtés | -\n`); notifier('Scorro : ENVOIS ARRÊTÉS', `3 échecs Buffer de suite : plus aucun envoi tant que tu n'as pas vérifié (voir a-publier/ERREURS.txt). Remettre etat.stopEnvois à null ensuite.`, 'a-publier/ERREURS.txt'); } f.echecs[reseau] = (f.echecs[reseau] ?? 0) + 1; erreur(cle, `Buffer ${reseau} (essai ${f.echecs[reseau]}/3) : ${dernier(b.sortie)}`); if (f.echecs[reseau] >= 3) f.restants = f.restants.filter((x) => x !== reseau); }
       garder();
     }
     if (!f.restants.length) delete etat.file[cle];
@@ -264,6 +269,25 @@ for (const t of dues) {
 }
 // Publication : voir publierFile(), appelée après chaque vidéo rendue puis une dernière fois ici.
 publierFile();
+// Veille : (1) rappel toutes les 30 min tant que les envois sont arrêtés ; (2) alerte si rien n'est parti depuis 3 h en journée alors que des vidéos attendaient.
+try {
+  if (etat.stopEnvois && !CI && maintenant - (etat.rappelStop ?? 0) >= 30 * MIN) { notifier('Scorro : ENVOIS TOUJOURS ARRÊTÉS', `Arrêtés depuis ${hhmmParis(etat.stopEnvois)} : rien ne part. Voir a-publier/ERREURS.txt.`, null, { sansIssue: true }); etat.rappelStop = maintenant; }
+  const derniere = Math.max(0, ...etat.pubs.filter((p) => p.t <= maintenant).map((p) => p.t));
+  if (auto && silenceAnormal({ file: etat.file, maintenant, derniereSortie: derniere, heureParis }) && maintenant - (etat.alerteSilence ?? 0) >= 3 * HEURE) { notifier('Scorro : RIEN PUBLIÉ depuis 3 h', `Des vidéos attendent (${Object.keys(etat.file).length}) mais aucune n'est partie depuis 3 h. Voir resume-du-jour.txt et a-publier/ERREURS.txt.`, 'a-publier/ERREURS.txt'); etat.alerteSilence = maintenant; }
+} catch (e) { erreur('veille', e.message); }
+// Série « fonctionnalités » (à la main) : la veille à 18 h, le Mac dépose la vidéo du lendemain (avec et sans son) + les légendes sur le Bureau et notifie.
+try {
+  const fonc = lireJson('data/fonctionnalites.json', { calendrier: [] });
+  etat.rappelsFonc ??= {};
+  const r = rappelDeLaVeille(fonc.calendrier, maintenant, { jourParis, heureParis, dejaFaits: etat.rappelsFonc });
+  if (r && !CI) {
+    const dest = `${process.env.HOME}/Desktop/Scorro-demain`;
+    fs.mkdirSync(dest, { recursive: true });
+    for (const f of fs.readdirSync('a-publier/fonctionnalites').filter((x) => x.startsWith(`${r.id}-`))) fs.copyFileSync(`a-publier/fonctionnalites/${f}`, `${dest}/${f}`);
+    notifier('Scorro : vidéo de demain à publier', `Demain ${r.date} à ${r.heure} : « ${r.id} ». Vidéos (avec et sans son) et légendes dans le dossier Scorro-demain, sur le Bureau.`, null, { sansIssue: false });
+    etat.rappelsFonc[r.id] = maintenant;
+  }
+} catch (e) { erreur('rappel-fonctionnalite', e.message); }
 // Alerte d'expiration du jeton GitHub (DEPOTS_TOKEN) : 7 jours avant la date de data/jeton.json, puis chaque jour jusqu'à l'expiration. Notification macOS, ou issue dans le dépôt PRIVÉ d'état en mode serveur.
 try {
   const jt = lireJson('data/jeton.json', null);
@@ -299,7 +323,7 @@ if (hhmmParis(maintenant) >= '22:30' && etat.resume !== jourParis(maintenant) &&
     if (maintenant > F - 12 * HEURE && !etat.publiees?.[`avant-journee-${round}`] && ms.some((m) => m.etat === 'NS')) alertes.push(`⚠️ ALERTE ${nom} : avant-journée NON partie — ${raison(`avant-journee-${round}`)}`);
     if (fini && !etat.publiees?.[`apres-journee-${round}`]) alertes.push(`⚠️ ALERTE ${nom} : récap NON parti — ${raison(`apres-journee-${round}`)}`);
   }
-  if (alertes.length) notifier('Scorro : ALERTE', `${alertes.length} vidéo(s) de grand championnat non parties : voir resume-du-jour.txt`, 'resume-du-jour.txt');
+  if (alertes.length && auto) notifier('Scorro : ALERTE', `${alertes.length} vidéo(s) de grand championnat non parties : voir resume-du-jour.txt`, 'resume-du-jour.txt');
   const lignes = [`Résumé du ${j} (écrit à ${hhmmParis(maintenant)}, heure de Paris)`, '', ...(alertes.length ? ['ALERTES GRANDS CHAMPIONNATS', ...alertes, ''] : ['Grands championnats : aucune alerte.', '']), `PUBLICATIONS : ${du.length}`, ...du.map((p) => `  ${hhmmParis(p.t)} | ${p.reseau} | ${p.video}`), '', `ERREURS / RETARDS / PLAFONDS : ${err.length}`, ...err.map((l) => `  ${l}`),
     ...(etat.stopEnvois ? ['', '⚠️ ENVOIS ARRÊTÉS après des échecs Buffer répétés. Rien ne repart tant que etat/auto.json n\'a pas stopEnvois = null.'] : []), '', 'PROGRAMME DES 2 PROCHAINS JOURS (paires avant + après)', ...prog,
     '', 'EN ATTENTE DE TON AVIS', '  - Vidéo « Ligues + pronos » v2 : brouillons/TEST-FONCTIONNALITE-ligues-pronos-v2.mp4', '  - Tests son (avant-journée, récap) : brouillons/TEST-SONS-avant-journee.mp4 et TEST-SONS-recap-journee.mp4 (le son est déjà actif sur tous les formats)',

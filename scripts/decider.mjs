@@ -244,3 +244,6 @@ export function faireLecture(cal, maintenant) {
   const aVerifier = (cal.matchs ?? []).some((m) => !FINIS.has(m.etat) && maintenant > m.debut - 15 * MIN && maintenant < m.debut);
   return (enCours || aVerifier) && maintenant - cal.lu >= 5 * MIN - 5000;
 }
+
+// Échec Buffer passager : la vidéo n'a pas pu être lue à son adresse (GitHub pas encore prêt).
+export const echecLecture = (sortie) => /could not be read|illisible/i.test(String(sortie ?? ''));

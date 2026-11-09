@@ -168,3 +168,32 @@ test('créneau : un contenu prioritaire déplace le moins important, jamais un a
   assert.equal(choisirADecaler(tache, 'tiktok', [prog(t0 + 30 * 60000, 6, 'x'), prog(t0 + 45 * 60000, 5, 'y', { prioritaire: true }), prog(t0 + 60 * 60000, 6, 'z')], t0, cfgD), null);
   assert.ok(creneau(tache, 'tiktok', pubs.filter((p) => p !== c), t0, cfgD) !== null);
 });
+
+import { silenceAnormal } from './notifier.mjs';
+import { heureParis as hP } from './decider.mjs';
+test('veille : silence de 3 h en journée avec des vidéos en attente = alerte', () => {
+  const t = Date.parse('2026-11-09T12:00:00Z'); // 13 h Paris
+  const file = { x: { restants: ['tiktok'], de: t - 5 * HEURE, jusqu: t + HEURE } };
+  assert.equal(silenceAnormal({ file, maintenant: t, derniereSortie: t - 4 * HEURE, heureParis: hP }), true);
+  assert.equal(silenceAnormal({ file, maintenant: t, derniereSortie: t - 1 * HEURE, heureParis: hP }), false);
+  assert.equal(silenceAnormal({ file: {}, maintenant: t, derniereSortie: 0, heureParis: hP }), false);
+  const nuit = Date.parse('2026-11-09T02:00:00Z');
+  assert.equal(silenceAnormal({ file, maintenant: nuit, derniereSortie: 0, heureParis: hP }), false);
+});
+
+import { echecLecture } from './decider.mjs';
+test('échec « Video could not be read » reconnu comme passager', () => {
+  assert.equal(echecLecture('instagram : Invalid post: Video could not be read from its URL.'), true);
+  assert.equal(echecLecture('401 Unauthorized'), false);
+});
+
+import { rappelDeLaVeille } from './notifier.mjs';
+import { jourParis as jP } from './decider.mjs';
+test('rappel de la veille : après 18 h, vidéo prête du lendemain, une seule fois', () => {
+  const cal = [{ date: '2026-11-10', heure: '12:00', id: 'a', statut: 'prête' }, { date: '2026-11-12', id: 'b', statut: 'à filmer' }];
+  const soir = Date.parse('2026-11-09T18:30:00Z'); // 19 h 30 Paris
+  assert.equal(rappelDeLaVeille(cal, soir, { jourParis: jP, heureParis: hP })?.id, 'a');
+  assert.equal(rappelDeLaVeille(cal, soir, { jourParis: jP, heureParis: hP, dejaFaits: { a: 1 } }), null);
+  assert.equal(rappelDeLaVeille(cal, Date.parse('2026-11-09T10:00:00Z'), { jourParis: jP, heureParis: hP }), null);
+  assert.equal(rappelDeLaVeille(cal, Date.parse('2026-11-11T18:30:00Z'), { jourParis: jP, heureParis: hP }), null);
+});
