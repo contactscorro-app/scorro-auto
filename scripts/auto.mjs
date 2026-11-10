@@ -42,6 +42,7 @@ const FORMATS = {
   'joueurs-journee': { script: 'preparer-joueurs-journee', comp: 'JoueursJournee', data: (t) => `data/joueurs-journee-${t.id}.json` },
   'avant-journee': { script: 'preparer-avant-journee', comp: 'AvantJournee', data: (t) => `data/avant-journee-${t.id}${t.jour ? `-${t.jour}` : ''}.json` },
   'avant-match': { script: 'preparer-avant-match', comp: 'AvantMatch', data: (t) => `data/avant-match-${t.id}.json` },
+  'classement-equipes': { script: 'preparer-attaques-defenses', comp: 'ClassementJoueurs', data: (t) => `data/classement-equipes-${t.id}.json` },
   classement: { script: 'preparer-classement', comp: 'ClassementJoueurs', data: (t) => `data/classement-${t.id}.json` },
 };
 // Export pour les réseaux (06/11) : images PNG, H.264 High yuv420p BT.709, 1080×1920 à 30 i/s, 16 Mb/s, AAC 48 kHz 192 kb/s, faststart ; grain léger dans les compositions.

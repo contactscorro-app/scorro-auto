@@ -33,7 +33,7 @@ export const Fonctionnalite: React.FC<any> = (d) => {
   return (
     <AbsoluteFill style={{ fontFamily: 'Inter, sans-serif' }}>
       <Fond />
-      {d.sons && <Mixage cues={planSonsGen(d.plans.length * 7 + 3, total, coupes)} />}
+      {d.sons && <Mixage cues={planSonsGen(d.plans.length * 7 + 3, total, coupes, [], undefined, !d.sansSifflet)} />}
       {d.plans.map((p: any) => { const f = frames(p), from = debut; debut += f; return <Sequence key={p.clip} from={from} durationInFrames={f}><PlanLong p={p} frames={f} /></Sequence>; })}
       <Sequence from={debut}><Fin texte={d.fin ?? "Dispo sur l'App Store"} /></Sequence>
       <Grain />

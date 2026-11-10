@@ -210,6 +210,15 @@ export function taches(matchs, cfg, maintenant, ctx = {}) {
   }
   // Top buteurs + passeurs Ligue 1 : le lundi à partir de 10 h (Paris), une fois par semaine (vidéo seule, place réservée).
   if (new Date(Date.parse(`${jourParis(maintenant)}T12:00:00Z`)).getUTCDay() === 1 && heureParis(maintenant) >= 10 && jourParis(maintenant) >= jourDebut) t.push({ cle: `classement-301-${semaine(maintenant)}`, format: 'classement', id: 301, gros: false, poids: poidsDe.classement, de: maintenant, jusqu: maintenant + 10 * HEURE });
+  // Trêve internationale : une vidéo « top buteurs + passeurs » par jour (cfg.treve = [{ id, jour }]), à 12 h (Paris), utile jusqu'à 22 h.
+  for (const e of cfg.treve ?? []) {
+    const de = parisA(e.jour, e.heure ?? 12);
+    if (maintenant >= de && maintenant < de + 10 * HEURE) t.push({ cle: `classement-${e.id}-treve`, format: 'classement', id: e.id, gros: false, poids: poidsDe.classement, de, jusqu: de + 10 * HEURE });
+  }
+  for (const e of cfg.treveEquipes ?? []) {
+    const de = parisA(e.jour, e.heure ?? 17);
+    if (maintenant >= de && maintenant < de + 6 * HEURE) t.push({ cle: `classement-equipes-${e.id}-treve`, format: 'classement-equipes', id: e.id, gros: false, poids: poidsDe.classement, de, jusqu: de + 6 * HEURE });
+  }
   return t;
 }
 // Garde-fous : rien entre 0 h et 8 h (sauf après-match d'un gros match, jusqu'à 1 h), 30 min d'écart, 12 par jour et par réseau.

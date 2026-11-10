@@ -40,7 +40,7 @@ export function planSons(format: 'avant-match' | 'apres-match', id: number, tota
   // Ambiance de foule continue : tout le contenu, puis fondu de 0,3 s sur la transition vers l'écran de fin.
   if (f) cues.push({ frame: 0, fichier: f.fichier, volume: f.volume, duree: total, depart: (id % 40) * 30, entree: 20, sortie: FADE });
   // Sifflet dès le début, posé sur l'ambiance déjà présente.
-  cues.push({ frame: 8, fichier: choisir(['sifflet-court', 'sifflet'], id), volume: 0.28, duree: 45 });
+  if (sifflet) cues.push({ frame: 8, fichier: choisir(['sifflet-court', 'sifflet'], id), volume: 0.28, duree: 45 });
   // Whoosh à chaque changement de carte, y compris vers l'écran de fin.
   [...coupes, total].forEach((c, i) => cues.push({ frame: c - 6, fichier: choisir(WHOOSH, id + i), volume: 0.22, duree: 36 }));
   // Applaudissements courts sur l'écran de fin (qui dure 75 images).
@@ -59,7 +59,7 @@ export function planSons(format: 'avant-match' | 'apres-match', id: number, tota
 // Mixage générique pour les autres formats (avant-journée, récap, joueurs de la journée, classements, fonctionnalités).
 // `moments` = [début, fin] d'un moment fort : la clameur démarre au début et s'arrête à la fin, qui est une transition (fondu de 0,3 s).
 const CLAMEURS = ['clameur-courte', 'clameur-victoire', 'stade-joie'];
-export function planSonsGen(id: number, total: number, coupes: number[], moments: [number, number][] = [], fond?: string): Cue[] {
+export function planSonsGen(id: number, total: number, coupes: number[], moments: [number, number][] = [], fond?: string, sifflet = true): Cue[] {
   const f = FONDS[fond ?? 'A'];
   const cues: Cue[] = [];
   if (f) cues.push({ frame: 0, fichier: f.fichier, volume: f.volume, duree: total, depart: (id % 40) * 30, entree: 20, sortie: FADE });

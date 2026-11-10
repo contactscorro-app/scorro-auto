@@ -31,7 +31,7 @@ for (let i = 0; i < 10; i++) {
 const reg = fs.existsSync('etat/publiees.json') ? JSON.parse(fs.readFileSync('etat/publiees.json', 'utf8')) : {};
 const parId = new Map();
 for (const [nom, rs] of Object.entries(reg)) for (const [rs1, id] of Object.entries(rs)) parId.set(id, { nom, reseau: rs1 });
-const FORMATS = ['avant-match', 'apres-match', 'avant-journee', 'apres-journee', 'joueurs-journee', 'classement', 'fonctionnalite', 'presentation'];
+const FORMATS = ['avant-match', 'apres-match', 'avant-journee', 'apres-journee', 'joueurs-journee', 'classement', 'classement-equipes', 'fonctionnalite', 'presentation'];
 const etiquette = (p) => {
   const a = parId.get(p.id);
   if (!a) return { format: 'non rattaché', match: '' };

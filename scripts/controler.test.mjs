@@ -197,3 +197,12 @@ test('rappel de la veille : après 18 h, vidéo prête du lendemain, une seule f
   assert.equal(rappelDeLaVeille(cal, Date.parse('2026-11-09T10:00:00Z'), { jourParis: jP, heureParis: hP }), null);
   assert.equal(rappelDeLaVeille(cal, Date.parse('2026-11-11T18:30:00Z'), { jourParis: jP, heureParis: hP }), null);
 });
+
+test('trêve : une vidéo top buteurs par jour prévu, à partir de 12 h', () => {
+  const cfg = { treve: [{ id: 8, jour: '2026-11-11' }], championnats: [], joueursJournee: [] };
+  const midi = Date.parse('2026-11-11T11:30:00Z'); // 12 h 30 Paris
+  const ids = (ms) => taches([], cfg, ms, { vusFinis: {}, engages: new Set(), avantOk: () => true }).filter((t) => t.cle === 'classement-8-treve').length;
+  assert.equal(ids(midi), 1);
+  assert.equal(ids(Date.parse('2026-11-11T08:00:00Z')), 0);
+  assert.equal(ids(Date.parse('2026-11-12T12:00:00Z')), 0);
+});

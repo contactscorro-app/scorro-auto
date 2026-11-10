@@ -11,6 +11,7 @@ export function legende(format, d, pub) {
     'joueurs-journee': () => `Les joueurs de la journée, ${d.ligue.texte}. Qui as-tu préféré ?`,
     'avant-journee': () => `${d.ligue.texte} : tous les matchs et les compos des affiches. Ton match à ne pas rater ?`,
     'avant-match': () => `${(d.accroche ?? '').replace(/ /g, ' ')}, ${d.jour.split(' · ')[0]} à ${d.heure}. Ton prono : 1, N ou 2 ?`,
+    'classement-equipes': () => `Meilleures attaques et meilleures défenses, ${d.ligue.nom}. ${d.sousTitre}.`,
     classement: () => `Top buteurs et passeurs, ${d.ligue.nom}. ${d.sousTitre}.`,
   }[format]();
   const appel = pub?.appEnLigne ? "\n\nScorro, dispo sur l'App Store. Lien dans la bio 👆" : '';
