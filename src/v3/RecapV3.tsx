@@ -2,6 +2,8 @@ import React from 'react';
 import { AbsoluteFill, Img, Sequence, interpolate, staticFile, useCurrentFrame, useVideoConfig } from 'remotion';
 import { FinV3, FondV3, Grain, Mots, PALETTES, Sons, Verre, arrivee, doux, flouVitesse, taillePourLargeur, usePolice, vitesse, POLICE, type Pal, type Son } from './kit';
 import { OuvertureVignette, VIGNETTE_FIN } from './Vignettes';
+import { planBruitages, type Evenement } from './sonsFluide';
+import { CONTACT, OPTIONS_SONS, graineDe, sonsScorro } from './sonsScorro';
 
 // Récap de journée (Ligue 1) ou de soirée (Ligue des champions), style v3. Données : data/apres-journee-<round>.json (scores recoupés).
 // Image 0 = vignette → accroche « RÉCAP / LIGUE 1 » (soulignement) → le soulignement devient la carte de verre → un match par carte (écussons qui tombent,
@@ -135,6 +137,28 @@ export const sonsRecapV3 = (d: any): Son[] => {
     { f: t.F, src: 'sons/v3/pop-3.wav', volume: 0.2 },
   ];
 };
+// Méthode sons du 24/11 (skill video-fluide) : voir AvantJourneeV3. Un match toutes les 1,8 s : le dosage (≤ 1 marquant / 2 s)
+// baisse automatiquement un score sur deux (÷ 3), ce qui varie aussi le relief.
+export const evenementsRecap = (d: any): Evenement[] => {
+  const t = tempsRecap(d), classement = d.classement?.length > 0;
+  return [
+    { f: VIGNETTE_FIN, action: 'sifflet' },                          // la vignette s'ouvre
+    { f: H0, action: 'frappe' },                                     // « RÉCAP » mot par mot
+    { f: H0 + 26, action: 'sparkle', secondaire: true },             // soulignement lumineux
+    { f: R1, action: 'raccord' },                                    // le soulignement devient la carte de verre
+    ...Array.from({ length: t.n }, (_, i) => [
+      { f: M0 + i * PAR, action: 'carte' as const, secondaire: true }, // la carte du match glisse
+      { f: M0 + i * PAR + 12 + CONTACT, action: 'impact' as const },   // le score se pose (ressort, contact)
+    ]).flat(),
+    { f: t.T, action: 'raccord' },                                   // « TOUS LES SCORES »
+    ...(classement ? [
+      { f: t.C - 4, action: 'zoomAvant' as const },                  // le disque clair devient le fond
+      { f: t.C + 14, action: 'carte' as const, secondaire: true },   // les lignes du classement arrivent
+    ] : []),
+    { f: t.F - 6 - 6 + CONTACT, action: 'ding' },                    // le logo Scorro se pose (FinV3)
+  ];
+};
+export const sonsRecapFluide = (d: any): Son[] => sonsScorro(tempsRecap(d).total, planBruitages(evenementsRecap(d), { graine: graineDe(d), ...OPTIONS_SONS }), d.diagSons ?? {});
 export const RecapV3: React.FC<any> = (d) => {
   const t = tempsRecap(d);
   return (
@@ -147,7 +171,7 @@ export const RecapV3: React.FC<any> = (d) => {
       {d.classement?.length > 0 && <><Disque debut={t.C} /><Sequence from={t.C} durationInFrames={CLASS + 10}><Classement d={d} /></Sequence></>}
       <Sequence from={t.F - 6}><FinV3 p={d.classement?.length ? CLAIR : P} /></Sequence>
       <OuvertureVignette format="recap" data={d} />
-      {d.sons && <Sons liste={sonsRecapV3(d)} />}
+      {d.sons && <Sons liste={d.sonsAnciens ? sonsRecapV3(d) : sonsRecapFluide(d)} />}
       <Grain />
     </AbsoluteFill>
   );

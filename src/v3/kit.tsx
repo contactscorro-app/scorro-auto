@@ -84,12 +84,13 @@ export const Mots: React.FC<{ lignes: Mot[][]; tailles: number[]; p: Pal; style?
     </div>
   );
 };
+// Nappe (25/11) : `nappe` = segments d'une même ambiance enchaînés (pas de contrôle de répétition) ; `debutFichier` saute le fondu du fichier ; `fondu` = entrée en fondu (images).
 // Bruitages (aucune musique) : variés, jamais le même fichier deux fois de suite, niveaux 0,15-0,3, ambiance ~0,08.
-export type Son = { f: number; src: string; volume: number; duree?: number; vitesse?: number };
+export type Son = { f: number; src: string; volume: number; duree?: number; vitesse?: number; nappe?: boolean; debutFichier?: number; fondu?: number };
 export const Sons: React.FC<{ liste: Son[] }> = ({ liste }) => {
   const tri = [...liste].sort((a, b) => a.f - b.f);
-  for (let i = 1; i < tri.length; i++) if (tri[i].src === tri[i - 1].src && !tri[i].src.startsWith('sons/fond') && !/\/(texte|chiffres)\/(frappe|tic)/.test(tri[i].src)) throw new Error(`bruitage répété deux fois de suite : ${tri[i].src} (${tri[i - 1].f}, ${tri[i].f})`);
-  return <>{tri.map((b, i) => <Sequence key={i} from={Math.max(0, b.f)} durationInFrames={b.duree ?? 45}><Audio src={staticFile(b.src)} volume={b.volume} playbackRate={b.vitesse ?? 1} /></Sequence>)}</>;
+  for (let i = 1; i < tri.length; i++) if (tri[i].src === tri[i - 1].src && !tri[i].nappe && !tri[i].src.startsWith('sons/fond') && !/\/(texte|chiffres)\/(frappe|tic)/.test(tri[i].src)) throw new Error(`bruitage répété deux fois de suite : ${tri[i].src} (${tri[i - 1].f}, ${tri[i].f})`);
+  return <>{tri.map((b, i) => <Sequence key={i} from={Math.max(0, b.f)} durationInFrames={b.duree ?? 45}><Audio src={staticFile(b.src)} volume={b.fondu ? (i: number) => b.volume * Math.min(1, (i + 1) / b.fondu!) : b.volume} playbackRate={b.vitesse ?? 1} trimBefore={b.debutFichier} /></Sequence>)}</>;
 };
 export const Grain: React.FC = () => { const f = useCurrentFrame(); return <AbsoluteFill style={{ pointerEvents: 'none', backgroundImage: `url(${staticFile('grain.png')})`, backgroundPosition: `${(f * 211) % 1080}px ${(f * 347) % 1920}px`, opacity: 0.7 }} />; };
 

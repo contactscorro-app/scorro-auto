@@ -1,0 +1,371 @@
+{
+ "actions": {
+  "frappe": {
+   "fichiers": [
+    "texte/frappe-douce-1.wav",
+    "texte/frappe-douce-2.wav",
+    "texte/frappe-douce-3.wav",
+    "texte/frappe-forge_01.wav",
+    "texte/frappe-forge_02.wav",
+    "texte/frappe-forge_03.wav",
+    "texte/frappe-forge_04.wav"
+   ],
+   "gain": 0.12,
+   "marquant": false
+  },
+  "frappeMeca": {
+   "fichiers": [
+    "texte/frappe-mecanique-1.wav",
+    "texte/frappe-mecanique-2.wav",
+    "texte/frappe-mecanique-3.wav"
+   ],
+   "gain": 0.12,
+   "marquant": false
+  },
+  "machineAEcrire": {
+   "fichiers": [
+    "texte/machine-a-ecrire-1.wav",
+    "texte/machine-a-ecrire-2.wav"
+   ],
+   "gain": 0.2,
+   "marquant": true
+  },
+  "stylo": {
+   "fichiers": [
+    "texte/stylo-1.wav",
+    "texte/stylo-2.wav"
+   ],
+   "gain": 0.14,
+   "marquant": false,
+   "duree": 60
+  },
+  "bulle": {
+   "fichiers": [
+    "texte/bulle-pop-1.wav",
+    "texte/bulle-pop-2.wav",
+    "texte/bulle-pop-douce-1.wav",
+    "texte/bulle-pop-douce-2.wav",
+    "texte/pop-forge_01.wav",
+    "texte/pop-forge_02.wav",
+    "texte/pop-forge_03.wav",
+    "texte/pop-forge_04.wav"
+   ],
+   "gain": 0.22,
+   "marquant": true
+  },
+  "tap": {
+   "fichiers": [
+    "interface/tap-1.wav",
+    "interface/tap-2.wav",
+    "interface/tap-3.wav"
+   ],
+   "gain": 0.16,
+   "marquant": false
+  },
+  "clic": {
+   "fichiers": [
+    "interface/clic-1.wav",
+    "interface/clic-2.wav",
+    "interface/clic-forge_01.wav",
+    "interface/clic-forge_02.wav",
+    "interface/clic-forge_03.wav",
+    "interface/clic-forge_04.wav",
+    "interface/clic-souris.wav"
+   ],
+   "gain": 0.16,
+   "marquant": false
+  },
+  "swipe": {
+   "fichiers": [
+    "interface/swipe-1.wav",
+    "interface/swipe-2.wav",
+    "interface/swipe-3.wav",
+    "interface/swipe-forge_01.wav",
+    "interface/swipe-forge_02.wav",
+    "interface/swipe-forge_03.wav",
+    "interface/swipe-forge_04.wav"
+   ],
+   "gain": 0.2,
+   "marquant": false
+  },
+  "scroll": {
+   "fichiers": [
+    "interface/scroll-1.wav",
+    "interface/scroll-2.wav"
+   ],
+   "gain": 0.16,
+   "marquant": false
+  },
+  "toggleOn": {
+   "fichiers": [
+    "interface/toggle-on.wav"
+   ],
+   "gain": 0.22,
+   "marquant": false
+  },
+  "toggleOff": {
+   "fichiers": [
+    "interface/toggle-off.wav"
+   ],
+   "gain": 0.22,
+   "marquant": false
+  },
+  "notification": {
+   "fichiers": [
+    "interface/notification-double.wav",
+    "interface/notification-montante.wav",
+    "interface/notification.wav"
+   ],
+   "gain": 0.24,
+   "marquant": true
+  },
+  "vibration": {
+   "fichiers": [
+    "interface/vibration-1.wav",
+    "interface/vibration-2.wav"
+   ],
+   "gain": 0.16,
+   "marquant": false
+  },
+  "carte": {
+   "fichiers": [
+    "mouvement/whoosh-court-1.wav",
+    "mouvement/whoosh-court-2.wav",
+    "mouvement/whoosh-court-3.wav",
+    "mouvement/whoosh-vif-1.wav",
+    "mouvement/whoosh-vif-2.wav",
+    "mouvement/whoosh-forge_01.wav",
+    "mouvement/whoosh-forge_02.wav",
+    "mouvement/whoosh-forge_03.wav",
+    "mouvement/whoosh-forge_04.wav"
+   ],
+   "gain": 0.26,
+   "marquant": true
+  },
+  "raccord": {
+   "fichiers": [
+    "mouvement/whoosh-long-1.wav",
+    "mouvement/whoosh-long-2.wav",
+    "mouvement/whoosh-air-2.wav",
+    "mouvement/glissement-1.wav",
+    "mouvement/glissement-2.wav"
+   ],
+   "gain": 0.3,
+   "marquant": true
+  },
+  "zoomAvant": {
+   "fichiers": [
+    "mouvement/zoom-avant-1.wav",
+    "mouvement/zoom-avant-2.wav"
+   ],
+   "gain": 0.28,
+   "marquant": true
+  },
+  "zoomArriere": {
+   "fichiers": [
+    "mouvement/zoom-arriere-1.wav",
+    "mouvement/zoom-arriere-2.wav"
+   ],
+   "gain": 0.28,
+   "marquant": true
+  },
+  "montee": {
+   "fichiers": [
+    "mouvement/rise-1.wav",
+    "mouvement/rise-2.wav",
+    "mouvement/rise-forge_01.wav",
+    "mouvement/rise-forge_02.wav",
+    "mouvement/rise-forge_03.wav",
+    "mouvement/rise-forge_04.wav",
+    "mouvement/rise-tonal.wav"
+   ],
+   "gain": 0.24,
+   "marquant": true,
+   "duree": 75
+  },
+  "chute": {
+   "fichiers": [
+    "mouvement/drop-1.wav",
+    "mouvement/drop-2.wav",
+    "mouvement/chute-air.wav"
+   ],
+   "gain": 0.26,
+   "marquant": true
+  },
+  "impact": {
+   "fichiers": [
+    "impact/hit-1.wav",
+    "impact/hit-2.wav",
+    "impact/hit-3.wav",
+    "impact/hit-titre-1.wav",
+    "impact/hit-titre-2.wav",
+    "impact/impact-forge_01.wav",
+    "impact/impact-forge_02.wav",
+    "impact/impact-forge_03.wav",
+    "impact/impact-forge_04.wav"
+   ],
+   "gain": 0.34,
+   "marquant": true
+  },
+  "boom": {
+   "fichiers": [
+    "impact/boom-1.wav",
+    "impact/boom-2.wav",
+    "impact/thump-forge_01.wav",
+    "impact/thump-forge_02.wav",
+    "impact/thump-forge_03.wav",
+    "impact/thump-forge_04.wav"
+   ],
+   "gain": 0.36,
+   "marquant": true,
+   "duree": 50
+  },
+  "stinger": {
+   "fichiers": [
+    "impact/stinger-1.wav",
+    "impact/stinger-2.wav",
+    "impact/stinger-doux.wav"
+   ],
+   "gain": 0.3,
+   "marquant": true,
+   "duree": 70
+  },
+  "tic": {
+   "fichiers": [
+    "chiffres/tic-1.wav",
+    "chiffres/tic-2.wav",
+    "chiffres/tic-3.wav",
+    "chiffres/tic-bois-1.wav",
+    "chiffres/tic-bois-2.wav"
+   ],
+   "gain": 0.12,
+   "marquant": false
+  },
+  "compteur": {
+   "fichiers": [
+    "chiffres/compteur-1.wav",
+    "chiffres/compteur-2.wav"
+   ],
+   "gain": 0.2,
+   "marquant": false
+  },
+  "ding": {
+   "fichiers": [
+    "chiffres/ding-1.wav",
+    "chiffres/ding-2.wav",
+    "chiffres/ding-clair.wav"
+   ],
+   "gain": 0.26,
+   "marquant": true
+  },
+  "sifflet": {
+   "fichiers": [
+    "foot/sifflet-arbitre.wav",
+    "foot/sifflet-1.wav",
+    "foot/sifflet-2.wav",
+    "foot/sifflet-3.wav"
+   ],
+   "gain": 0.26,
+   "marquant": true
+  },
+  "ballon": {
+   "fichiers": [
+    "foot/ballon-reel-1.wav",
+    "foot/ballon-reel-2.wav",
+    "foot/ballon-frappe-1.wav",
+    "foot/ballon-frappe-2.wav",
+    "foot/ballon-frappe-3.wav"
+   ],
+   "gain": 0.3,
+   "marquant": true
+  },
+  "filet": {
+   "fichiers": [
+    "foot/filet-reel.wav"
+   ],
+   "gain": 0.3,
+   "marquant": true
+  },
+  "but": {
+   "fichiers": [
+    "foot/tribunes-but.mp3",
+    "foot/but-cri-1.mp3",
+    "foot/but-cri-2.mp3"
+   ],
+   "gain": 0.3,
+   "marquant": true,
+   "duree": 150
+  },
+  "ooh": {
+   "fichiers": [
+    "foot/foule-ooh-1.wav",
+    "foot/foule-ooh-2.wav",
+    "foot/foule-ooh-3.wav",
+    "foot/foule-ooh-4.wav",
+    "foot/foule-oh-decue.wav"
+   ],
+   "gain": 0.28,
+   "marquant": true,
+   "duree": 90
+  },
+  "fouleJoie": {
+   "fichiers": [
+    "foot/foule-joie.wav"
+   ],
+   "gain": 0.24,
+   "marquant": true,
+   "duree": 90
+  },
+  "surprise": {
+   "fichiers": [
+    "foot/souffle-surprise.wav"
+   ],
+   "gain": 0.2,
+   "marquant": true
+  },
+  "cash": {
+   "fichiers": [
+    "reussite/cash.wav",
+    "reussite/pieces.wav"
+   ],
+   "gain": 0.26,
+   "marquant": true
+  },
+  "sparkle": {
+   "fichiers": [
+    "reussite/sparkle-1.wav",
+    "reussite/sparkle-2.wav",
+    "reussite/sparkle-balaye.wav"
+   ],
+   "gain": 0.2,
+   "marquant": false
+  },
+  "levelUp": {
+   "fichiers": [
+    "reussite/level-up.wav",
+    "reussite/succes.wav"
+   ],
+   "gain": 0.24,
+   "marquant": true,
+   "duree": 75
+  }
+ },
+ "nappes": {
+  "air": "nappes/nappe-air.mp3",
+  "chaude": "nappes/nappe-chaude.mp3",
+  "piece": "nappes/ambiance-piece.mp3",
+  "stade": "foot/tribunes-ambiance.mp3",
+  "stadeMixkit": "foot/stade-ambiance-2.mp3"
+ },
+ "credits": {
+  "foot/ballon-reel-2.wav": "« soccer kick 02.wav » par volivieri (https://freesound.org/people/volivieri/sounds/37157), CC BY 4.0",
+  "foot/filet-reel.wav": "« Footie near miss goal kick and rattling.mp3 » par arfanile (https://freesound.org/people/arfanile/sounds/667509), CC BY 4.0",
+  "foot/foule-ooh-1.wav": "« Football Crowd - Near Miss ooh - Southampton Vs Hull at Saint Mary's Stadium.wav » par Quistard (https://freesound.org/people/Quistard/sounds/237683), CC BY 3.0",
+  "foot/foule-ooh-2.wav": "« Football Crowd - Near Miss ooh - Southampton Vs Hull at Saint Mary's Stadium.wav » par Quistard (https://freesound.org/people/Quistard/sounds/237683), CC BY 3.0",
+  "foot/foule-ooh-3.wav": "« Football-crowd-near-miss-from-freekick.wav » par paulw2k (https://freesound.org/people/paulw2k/sounds/196464), CC BY 4.0",
+  "foot/tribunes-but.mp3": "« Football Crowd - Goal Cheer - Southampton Vs Hull at Saint Mary's Stadium.wav » par Quistard (https://freesound.org/people/Quistard/sounds/237679), CC BY 3.0"
+ },
+ "nc_prefixes": [
+  "perso-non-commercial/"
+ ]
+}

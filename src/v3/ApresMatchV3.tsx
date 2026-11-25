@@ -2,7 +2,9 @@ import React from 'react';
 import { AbsoluteFill, Img, Sequence, interpolate, staticFile, useCurrentFrame, useVideoConfig } from 'remotion';
 import { FinV3, FondV3, Grain, Mots, PALETTES, Sons, Verre, arrivee, doux, flouVitesse, taillePourLargeur, usePolice, vitesse, POLICE, type Pal, type Son } from './kit';
 import { OuvertureVignette, VIGNETTE_FIN } from './Vignettes';
-import { planBruitages, NAPPES, VOLUME_NAPPE } from './sons';
+import { planBruitages as planBruitagesAncien, NAPPES, VOLUME_NAPPE } from './sons';
+import { planBruitages, type Evenement } from './sonsFluide';
+import { CONTACT, OPTIONS_SONS, graineDe, sonsScorro } from './sonsScorro';
 
 // Après-match (choc), style v3. Données : data/score-final-<id>.json (score recoupé). Sert aussi de base à la story après-match.
 // Image 0 = vignette → « PSG / bat / NICE » mot par mot, soulignement sous le vainqueur → le soulignement devient la carte : écussons qui tombent,
@@ -122,7 +124,7 @@ export const sonsStoryApresFluide = (d: any): Son[] => {
   const t = tempsApres({ ...d, story: true });
   return [
     { f: 0, src: NAPPES.stade, volume: VOLUME_NAPPE * 1.6, duree: t.total },
-    ...planBruitages([
+    ...planBruitagesAncien([
       { f: VIGNETTE_FIN, action: 'carte' },
       { f: H0, action: 'frappe' },
       { f: R1, action: 'raccord' },
@@ -133,6 +135,19 @@ export const sonsStoryApresFluide = (d: any): Son[] => {
     ], { graine: d.fixtureId ?? 7, gainGlobal: 0.9 }),
   ];
 };
+// Story après-match, méthode sons du 24/11 (étendue le 25/11). La vidéo après-match (non story) garde ses sons.
+export const evenementsStoryApres = (d: any): Evenement[] => {
+  const t = tempsApres({ ...d, story: true });
+  return [
+    { f: VIGNETTE_FIN, action: 'sifflet' },                              // la vignette s'ouvre (coup de sifflet final)
+    { f: H0, action: 'frappe' },                                         // « PSG / BAT / NICE » mot par mot
+    ...(d.gagnant !== null ? [{ f: H0 + 28, action: 'clic' as const, secondaire: true }] : []), // soulignement du vainqueur
+    { f: R1, action: 'raccord' },                                        // le soulignement devient la carte
+    { f: S0 + 14 + CONTACT, action: 'impact' },                          // le score se pose (ressort, contact)
+    { f: t.F - 14 + CONTACT, action: 'ding' },                           // le logo Scorro se pose (FinV3)
+  ];
+};
+export const sonsStoryApresFluideV2 = (d: any): Son[] => sonsScorro(tempsApres({ ...d, story: true }).total, planBruitages(evenementsStoryApres(d), { graine: graineDe({ id: d.fixtureId ?? 0 }), ...OPTIONS_SONS }), d.diagSons ?? {});
 export const sonsApresV3 = (d: any): Son[] => {
   const t = tempsApres(d);
   return [
@@ -159,7 +174,7 @@ export const ApresMatchV3: React.FC<any> = (d) => {
       {!d.story && <><Disque debut={t.Q} /><Sequence from={t.Q} durationInFrames={QUESTION + 10}><Question /></Sequence></>}
       <Sequence from={t.F - 8}><FinV3 p={d.story ? P : CLAIR} /></Sequence>
       <OuvertureVignette format="apres-match" data={d} />
-      {d.sons && <Sons liste={d.story ? sonsStoryApresFluide(d) : sonsApresV3(d)} />}
+      {d.sons && <Sons liste={d.story ? (d.sonsAnciens ? sonsStoryApresFluide(d) : sonsStoryApresFluideV2(d)) : sonsApresV3(d)} />}
       <Grain />
     </AbsoluteFill>
   );

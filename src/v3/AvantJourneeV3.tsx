@@ -2,6 +2,8 @@ import React from 'react';
 import { AbsoluteFill, Img, Sequence, interpolate, staticFile, useCurrentFrame, useVideoConfig } from 'remotion';
 import { FinV3, FondV3, Grain, Mots, PALETTES, Sons, Verre, arrivee, doux, flouVitesse, taillePourLargeur, usePolice, vitesse, POLICE, type Pal, type Son } from './kit';
 import { OuvertureVignette, VIGNETTE_FIN } from './Vignettes';
+import { planBruitages, type Evenement } from './sonsFluide';
+import { CONTACT, OPTIONS_SONS, graineDe, sonsScorro } from './sonsScorro';
 
 // Avant-journée (Ligue 1), style v3. Données : data/avant-journee-<round>.json (tous les matchs de la journée, rangs au classement).
 // Image 0 = vignette → « AVANT-JOURNÉE / LIGUE 1 » → le soulignement devient la carte : les matchs arrivent un par un (jour, heure, écussons, rangs)
@@ -92,6 +94,24 @@ export const sonsAvantJourneeV3 = (d: any): Son[] => {
     { f: t.F, src: 'sons/v3/reussite-1.wav', volume: 0.15, duree: 60 },
   ];
 };
+// Méthode sons du 24/11 (skill video-fluide) : chaque son démarre à l'image exacte du mouvement (contact du ressort, début du raccord),
+// variantes sans répétition tirées par graine, ≤ 1 son marquant / 2 s (les autres ÷ 3), sons CC BY écartés (pas de crédit à ajouter), nappe Mixkit validée.
+export const evenementsAvantJournee = (d: any): Evenement[] => {
+  const t = tempsAvantJournee(d), dernier = L0 + (t.n - 1) * PAR;
+  return [
+    { f: VIGNETTE_FIN, action: 'sifflet' },                          // la vignette s'ouvre
+    { f: H0, action: 'frappe' },                                     // « AVANT-JOURNÉE » mot par mot (frappes au début seulement)
+    { f: H0 + 26, action: 'sparkle', secondaire: true },             // soulignement lumineux
+    { f: R1, action: 'raccord' },                                    // le soulignement devient la carte
+    ...Array.from({ length: t.n - 1 }, (_, i) => i).filter((i) => i % 2 === 0).map((i) => ({ f: L0 + i * PAR, action: 'carte' as const, secondaire: true })), // une ligne sur deux glisse
+    { f: dernier + CONTACT, action: 'impact' },                      // la dernière ligne se pose
+    { f: t.R2 - 4, action: 'zoomAvant' },                            // le disque sombre devient le fond
+    { f: t.R2, action: 'frappe' },                                   // « TON MATCH À NE PAS RATER ? »
+    { f: t.R2 + 34, action: 'clic', secondaire: true },              // soulignement de RATER (clic : un seul sparkle à attaque nette)
+    { f: t.F - 14 + CONTACT, action: 'ding' },                       // le logo Scorro se pose (FinV3)
+  ];
+};
+export const sonsAvantJourneeFluide = (d: any): Son[] => sonsScorro(tempsAvantJournee(d).total, planBruitages(evenementsAvantJournee(d), { graine: graineDe(d), ...OPTIONS_SONS }), d.diagSons ?? {});
 export const AvantJourneeV3: React.FC<any> = (d) => {
   const t = tempsAvantJournee(d);
   return (
@@ -104,7 +124,7 @@ export const AvantJourneeV3: React.FC<any> = (d) => {
       <Sequence from={t.R2} durationInFrames={QUESTION + 10}><Question /></Sequence>
       <Sequence from={t.F - 8}><FinV3 p={SOMBRE} /></Sequence>
       <OuvertureVignette format="avant-journee" data={d} />
-      {d.sons && <Sons liste={sonsAvantJourneeV3(d)} />}
+      {d.sons && <Sons liste={d.sonsAnciens ? sonsAvantJourneeV3(d) : sonsAvantJourneeFluide(d)} />}
       <Grain />
     </AbsoluteFill>
   );
