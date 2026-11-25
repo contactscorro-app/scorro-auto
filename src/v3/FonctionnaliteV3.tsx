@@ -1,6 +1,7 @@
 import React from 'react';
 import { AbsoluteFill, Img, OffthreadVideo, Sequence, interpolate, staticFile, useCurrentFrame, useVideoConfig } from 'remotion';
-import { planBruitages, NAPPES, VOLUME_NAPPE, type Evenement } from './sons';
+import { planBruitages as planBruitagesFluide, type Evenement as EvenementFluide } from './sonsFluide';
+import { OPTIONS_SONS, sonsScorro } from './sonsScorro';
 import { FinV3, FondV3, Grain, Mots, PALETTES, Sons, arrivee, doux, flouVitesse, taillePourLargeur, usePolice, vitesse, POLICE, type Mot, type Pal, type Son } from './kit';
 
 // Série « Fonctionnalités de l'app » (décision de l'éditeur du 23/11), style v3. UNE fonctionnalité par vidéo, 10-20 s, sans voix ni musique.
@@ -155,32 +156,17 @@ export const sonsFoncAncien = (d: Fonc): Son[] => {
     { f: t.C + 40, src: 'sons/v3/reussite-1.wav', volume: 0.16, duree: 56 },
   ];
 };
-// Nouvelle banque (skill video-fluide/sons, 24/11) et ses règles (planBruitages) : un son par action CLÉ à l'image exacte du mouvement,
-// au plus ~1 son marquant toutes les 2 s (les suivants sont baissés automatiquement), frappes très basses, nappe de stade à 0,05, variantes par graine.
-export const sonsFonc = (d: Fonc): Son[] => {
+// Fond en silence (25/11 15:50, l'éditeur) : aucune nappe ; quelques sons ponctuels doux aux moments forts seulement
+// (le téléphone arrive, la notification, le « ding » de l'appel à l'action), au plus 1 son / 3 s (sonsScorro).
+export const evenementsFonc = (d: Fonc): EvenementFluide[] => {
   const t = tempsFonc(d);
-  const graine = [...d.id].reduce((a, c) => a + c.charCodeAt(0), 0);
-  const ev: Evenement[] = [
-    { f: V, action: 'carte' },                      // la vignette part
-    { f: H0 + 1, action: 'frappe' },                // accroche : 3-4 frappes au début, puis le clavier s'efface
+  return [
     { f: R1, action: 'raccord' },                   // le soulignement devient le téléphone
-    { f: R1 + 16, action: 'impact', secondaire: true }, // il se pose
-    ...t.debuts.map((x) => ({ f: x + 3, action: 'frappe' as const })),
-    ...t.debuts.slice(1).map((x) => ({ f: x - 6, action: 'swipe' as const })), // l'écran change
-    ...d.plans.flatMap((p, j) => (p.notif ? [
-      { f: t.debuts[j] + p.notif.a + 2, action: 'notification' as const },
-      { f: t.debuts[j] + p.notif.a + 4, action: 'vibration' as const, secondaire: true },
-      { f: t.debuts[j] + p.notif.a + 24, action: 'sifflet' as const },
-      { f: t.debuts[j] + p.notif.a + 30, action: 'fouleJoie' as const },
-    ] : [])),
-    { f: t.C, action: 'zoomArriere' },              // le disque sombre envahit l'écran
-    { f: t.C + 44, action: 'levelUp' },             // « L'APP STORE » souligné
+    ...d.plans.flatMap((p, j) => (p.notif ? [{ f: t.debuts[j] + p.notif.a + 2, action: 'notification' as const }] : [])),
+    { f: t.C + 44, action: 'ding' },                // « L'APP STORE » souligné
   ];
-  // Nappe un peu au-dessus du 0,05 conseillé et bruitages à 90 % : moins d'écart crête/niveau, donc −16 LUFS avec une crête ≤ −1,5 dBTP.
-  // mix (optionnel, par vidéo) : nappe et gain global, si le mixage par défaut est trop « pointu » pour −16 LUFS sans saturer.
-  const mix = (d as any).mix ?? {};
-  return [{ f: 0, src: NAPPES.stade, volume: mix.nappe ?? VOLUME_NAPPE * 1.6, duree: t.total }, ...planBruitages(ev, { graine, gainGlobal: mix.gain ?? 0.9 })];
 };
+export const sonsFonc = (d: Fonc): Son[] => sonsScorro(tempsFonc(d).total, planBruitagesFluide(evenementsFonc(d), { graine: [...d.id].reduce((a, c) => a + c.charCodeAt(0), 0), ...OPTIONS_SONS }));
 export const FonctionnaliteV3: React.FC<any> = (props) => {
   const d = props as Fonc & { sons?: boolean };
   const t = tempsFonc(d);

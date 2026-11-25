@@ -59,7 +59,8 @@ const FORMATS = {
   'f-trois': { script: 'preparer-format', args: (t) => ['trois', String(t.id)], comp: 'FormatTrois', data: (t) => `data/format-trois-${t.id}.json` },
   // Série « Fonctionnalités de l'app » (23/11) : données = data/fonctionnalites-v3.json (vraies captures), composition v3.
   // pret : vidéo déjà rendue ET contrôlée (QA image par image) dans brouillons/fonctionnalites-v3/NN-<id>.mp4 (+ .duree, .vignette.png) : l'auto la réutilise, sans nouveau rendu.
-  'f-fonc': { v3: true, qa: true, pret: (t) => { const d = 'brouillons/fonctionnalites-v3'; const f = fs.existsSync(d) ? fs.readdirSync(d).find((x) => x.endsWith(`-${t.fid}.mp4`)) : null; return f && fs.existsSync(`${d}/${f.replace(/\.mp4$/, '.duree')}`) ? `${d}/${f}` : null; }, script: 'preparer-fonctionnalite', args: (t) => [t.fid], comp: 'V3Fonctionnalite', data: (t) => `data/format-fonc-${t.fid}.json` },
+  // 25/11 : seulement si elle porte le marqueur .silence (rendue SANS fond continu) ; les rendus du 24/11 (avec nappe) ne sont plus réutilisés : rendu à neuf.
+  'f-fonc': { v3: true, qa: true, pret: (t) => { const d = 'brouillons/fonctionnalites-v3'; const f = fs.existsSync(d) ? fs.readdirSync(d).find((x) => x.endsWith(`-${t.fid}.mp4`)) : null; return f && fs.existsSync(`${d}/${f.replace(/\.mp4$/, '.duree')}`) && fs.existsSync(`${d}/${f.replace(/\.mp4$/, '.silence')}`) ? `${d}/${f}` : null; }, script: 'preparer-fonctionnalite', args: (t) => [t.fid], comp: 'V3Fonctionnalite', data: (t) => `data/format-fonc-${t.fid}.json` },
   'f-carte': { script: 'preparer-format', args: () => ['carte'], comp: 'FormatCarte', data: () => 'data/format-carte-maghreb.json' },
 };
 // Serveur : brouillons/ n'existe pas. La vidéo de fonctionnalité déjà rendue est lue dans le dépôt PRIVÉ de médias (scripts/preparer-medias.mjs),
@@ -173,8 +174,8 @@ async function traiter(t) {
   if (F.v3 && r.ok) { const v = lancer('npx', ['remotion', 'still', 'src/index.ts', F.comp, `out/${nom}.vignette.png`, '--frame=0', `--props=${props}`, '--log=error', ...(chrome ? [`--browser-executable=${chrome}`] : [])]); if (!v.ok) erreur(t.cle, `vignette PNG : ${dernier(v.sortie)}`); }
   if (props !== F.data(t)) fs.rmSync(props, { force: true });
   if (!r.ok || !fs.existsSync(temp)) throw new Error(`rendu : ${dernier(r.sortie)}`);
-  // Son final à −16 LUFS (règle de l'éditeur du 22/11), image copiée telle quelle. En cas d'échec : la vidéo garde son son d'origine, une ligne dans ERREURS.txt.
-  if (cfg.lufs !== false) { const n = lancer(process.execPath, ['scripts/normaliser-son.mjs', temp, String(cfg.lufs ?? -16)]); if (!n.ok) erreur(t.cle, `son non normalisé : ${dernier(n.sortie)}`); }
+  // Son final : fond en silence depuis le 25/11 15:50 → mode « ponctuel » (≤ −24 LUFS, crête ≤ −6 dBTP, gain linéaire, calage AAC 43 ms), image copiée telle quelle. En cas d'échec : la vidéo garde son son d'origine, une ligne dans ERREURS.txt.
+  if (cfg.lufs !== false) { const n = lancer(process.execPath, ['scripts/normaliser-son.mjs', temp, String(cfg.lufs ?? 'ponctuel')]); if (!n.ok) erreur(t.cle, `son non normalisé : ${dernier(n.sortie)}`); }
   const { dureeFichier } = await import('./controle-video.mjs');
   const dureeRendue = dureeFichier(temp);
   if (!(Math.abs(dureeRendue - dureePrevue) <= 1)) { fs.rmSync(temp, { force: true }); throw new Error(`GARDE-FOU : fichier rendu de ${dureeRendue} s au lieu de ${dureePrevue.toFixed(2)} s prévues (±1 s), vidéo jetée`); }

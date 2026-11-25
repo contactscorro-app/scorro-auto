@@ -78,14 +78,14 @@ export const demandeCredit = (fichier: string) => fichier in CREDITS;
  *  - au plus un son marquant toutes les `ecartMarquant` images (défaut 60 = 2 s) : les autres passent en secondaire ;
  *  - jamais le même fichier deux fois de suite pour la même action.
  */
-export const planBruitages = (evenements: Evenement[], {graine = 1, ecartMarquant = 60, gainGlobal = 1, coursPerso = false, sansCredit = true, varierHauteur = true, exclure = [] as string[]} = {}): BruitageFluide[] => {
+export const planBruitages = (evenements: Evenement[], {graine = 1, ecartMarquant = 60, gainGlobal = 1, coursPerso = false, sansCredit = true, varierHauteur = true, exclure = [] as string[], seulement = undefined as Record<string, string[]> | undefined} = {}): BruitageFluide[] => {
   const rnd = alea(graine);
   const dernierFichier: Partial<Record<Action, string>> = {};
   const out: BruitageFluide[] = [];
   let dernierMarquant = -1e9;
   const poser = (f: number, action: Action, secondaire: boolean) => {
     const def: Def = ACTIONS[action];
-    const pool = def.fichiers.filter((x) => !(sansCredit && demandeCredit(x)) && !exclure.includes(x));
+    const pool = def.fichiers.filter((x) => !(sansCredit && demandeCredit(x)) && !exclure.includes(x) && !(seulement?.[action as string] && !seulement[action as string].includes(x))); // seulement : sons doux de Scorro (25/11)
     if (!pool.length) throw new Error(`aucun son sans crédit pour l'action ${String(action)}`);
     const choix = pool.filter((x) => x !== dernierFichier[action] || pool.length === 1);
     const fichier = choix[Math.floor(rnd() * choix.length)];

@@ -148,18 +148,14 @@ export const evenementsStoryApres = (d: any): Evenement[] => {
   ];
 };
 export const sonsStoryApresFluideV2 = (d: any): Son[] => sonsScorro(tempsApres({ ...d, story: true }).total, planBruitages(evenementsStoryApres(d), { graine: graineDe({ id: d.fixtureId ?? 0 }), ...OPTIONS_SONS }), d.diagSons ?? {});
+// Vidéo après-match (non story) : fond en silence (25/11 15:50) ; 2 à 3 sons ponctuels aux moments forts seulement
+// (score qui se pose, stats, fin ; au moins 3 s entre deux sons). Sifflet, whoosh, clics, souffle et « réussite » longue coupés (douteux).
 export const sonsApresV3 = (d: any): Son[] => {
   const t = tempsApres(d);
   return [
-    { f: 0, src: 'sons/fond-a.mp3', volume: 0.45, duree: t.F },
-    { f: VIGNETTE_FIN, src: 'sons/sifflet-court.mp3', volume: 0.15, duree: 40 },
-    { f: H0 + 28, src: 'sons/v3/clic-1.wav', volume: 0.16 },
-    { f: R1, src: 'sons/whoosh-2.mp3', volume: 0.2, duree: 30 },
     { f: S0 + 8, src: 'sons/v3/impact-1.wav', volume: 0.16 },
-    { f: S0 + 14, src: 'sons/v3/reussite-1.wav', volume: 0.16, duree: 60 },
-    ...(!d.story && d.statsCles?.length ? [{ f: t.T, src: 'sons/whoosh-2.mp3', volume: 0.18, duree: 30 }, { f: t.T + 14, src: 'sons/v3/pop-2.wav', volume: 0.15 }] : []),
-    ...(!d.story ? [{ f: t.Q - 4, src: 'sons/v3/souffle-1.wav', volume: 0.18 }, { f: t.Q + 38, src: 'sons/v3/clic-2.wav', volume: 0.15 }] : []),
-    { f: t.F, src: 'sons/v3/impact-2.wav', volume: 0.16 },
+    ...(!d.story && d.statsCles?.length ? [{ f: t.T + 14, src: 'sons/v3/pop-2.wav', volume: 0.13 }] : []),
+    { f: t.F, src: 'sons/v3/impact-2.wav', volume: 0.14 },
   ];
 };
 export const ApresMatchV3: React.FC<any> = (d) => {
