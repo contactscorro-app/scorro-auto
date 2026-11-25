@@ -84,20 +84,17 @@ export const Mots: React.FC<{ lignes: Mot[][]; tailles: number[]; p: Pal; style?
     </div>
   );
 };
-// Nappe (25/11) : `nappe` = segments d'une même ambiance enchaînés (pas de contrôle de répétition) ; `debutFichier` saute le fondu du fichier ; `fondu` = entrée en fondu (images).
 // Bruitages (aucune musique) : variés, jamais le même fichier deux fois de suite, niveaux 0,15-0,3, ambiance ~0,08.
-export type Son = { f: number; src: string; volume: number; duree?: number; vitesse?: number; nappe?: boolean; debutFichier?: number; fondu?: number };
-// FOND EN SILENCE (25/11 15:50, l'éditeur) : garde-fou au rendu, pour TOUS les formats et tous les chemins (y compris `sonsAnciens`) :
-// aucun son continu (nappe, fond, ambiance, foule, tribunes, clameur, cris, applaudissements) et aucun son de plus de 2 s n'est joué.
-export const CONTINU = /(^|\/)(nappes?\/|nappe|fond|ambiance|stade|tribunes|foule|clameur|but-cri|applaudissements)/;
-export const estContinu = (b: Son) => !!b.nappe || CONTINU.test(b.src) || (b.duree ?? 45) > 60;
-/** Fondu de sortie (images) : aucun son ne s'arrête net, même coupé par la fin de sa séquence. */
-export const FONDU_SORTIE = 6;
-export const volumeSon = (b: Son) => (i: number) => { const d = b.duree ?? 45; return b.volume * (b.fondu ? Math.min(1, (i + 1) / b.fondu) : 1) * Math.max(0, Math.min(1, (d - i) / FONDU_SORTIE)); };
+export type Son = { f: number; src: string; volume: number; duree?: number; vitesse?: number };
+// RÉFÉRENCE SONORE (l'éditeur, 25/11 17:26, Q58) = le Top 5 buteurs v3 publié le 23/11 : mêmes sons (banque public/sons/, 23/11), même dosage,
+// avec 2 corrections seulement : l'avance AAC de 43 ms (normaliser-son.mjs) et AUCUN FOND CONTINU. Ce filtre retire au rendu tout son continu
+// (fond, nappe, ambiance, stade, tribunes, foule, clameur, applaudissements), quel que soit le format ou le chemin qui l'a demandé.
+export const CONTINU = /(^|\/)(nappes?\/|nappe|fond|ambiance|stade|tribunes|foule|clameur|applaudissements)/;
+export const estContinu = (b: Son) => CONTINU.test(b.src);
 export const Sons: React.FC<{ liste: Son[] }> = ({ liste }) => {
   const tri = liste.filter((b) => !estContinu(b)).sort((a, b) => a.f - b.f);
-  for (let i = 1; i < tri.length; i++) if (tri[i].src === tri[i - 1].src && !tri[i].nappe && !tri[i].src.startsWith('sons/fond') && !/\/(texte|chiffres)\/(frappe|tic)/.test(tri[i].src)) throw new Error(`bruitage répété deux fois de suite : ${tri[i].src} (${tri[i - 1].f}, ${tri[i].f})`);
-  return <>{tri.map((b, i) => <Sequence key={i} from={Math.max(0, b.f)} durationInFrames={b.duree ?? 45}><Audio src={staticFile(b.src)} volume={volumeSon(b)} playbackRate={b.vitesse ?? 1} trimBefore={b.debutFichier} /></Sequence>)}</>;
+  for (let i = 1; i < tri.length; i++) if (tri[i].src === tri[i - 1].src && !tri[i].src.startsWith('sons/fond') && !/\/(texte|chiffres)\/(frappe|tic)/.test(tri[i].src)) throw new Error(`bruitage répété deux fois de suite : ${tri[i].src} (${tri[i - 1].f}, ${tri[i].f})`);
+  return <>{tri.map((b, i) => <Sequence key={i} from={Math.max(0, b.f)} durationInFrames={b.duree ?? 45}><Audio src={staticFile(b.src)} volume={b.volume} playbackRate={b.vitesse ?? 1} /></Sequence>)}</>;
 };
 export const Grain: React.FC = () => { const f = useCurrentFrame(); return <AbsoluteFill style={{ pointerEvents: 'none', backgroundImage: `url(${staticFile('grain.png')})`, backgroundPosition: `${(f * 211) % 1080}px ${(f * 347) % 1920}px`, opacity: 0.7 }} />; };
 

@@ -2,9 +2,7 @@ import React from 'react';
 import { AbsoluteFill, Img, Sequence, interpolate, staticFile, useCurrentFrame, useVideoConfig } from 'remotion';
 import { FinV3, FondV3, Grain, Mots, PALETTES, Sons, Verre, arrivee, doux, flouVitesse, taillePourLargeur, usePolice, vitesse, POLICE, type Pal, type Son } from './kit';
 import { OuvertureVignette, VIGNETTE_FIN } from './Vignettes';
-import { planBruitages as planBruitagesAncien, NAPPES, VOLUME_NAPPE } from './sons';
-import { planBruitages, type Evenement } from './sonsFluide';
-import { CONTACT, OPTIONS_SONS, graineDe, sonsScorro } from './sonsScorro';
+import { planBruitages, NAPPES, VOLUME_NAPPE } from './sons';
 
 // Après-match (choc), style v3. Données : data/score-final-<id>.json (score recoupé). Sert aussi de base à la story après-match.
 // Image 0 = vignette → « PSG / bat / NICE » mot par mot, soulignement sous le vainqueur → le soulignement devient la carte : écussons qui tombent,
@@ -124,7 +122,7 @@ export const sonsStoryApresFluide = (d: any): Son[] => {
   const t = tempsApres({ ...d, story: true });
   return [
     { f: 0, src: NAPPES.stade, volume: VOLUME_NAPPE * 1.6, duree: t.total },
-    ...planBruitagesAncien([
+    ...planBruitages([
       { f: VIGNETTE_FIN, action: 'carte' },
       { f: H0, action: 'frappe' },
       { f: R1, action: 'raccord' },
@@ -135,27 +133,18 @@ export const sonsStoryApresFluide = (d: any): Son[] => {
     ], { graine: d.fixtureId ?? 7, gainGlobal: 0.9 }),
   ];
 };
-// Story après-match, méthode sons du 24/11 (étendue le 25/11). La vidéo après-match (non story) garde ses sons.
-export const evenementsStoryApres = (d: any): Evenement[] => {
-  const t = tempsApres({ ...d, story: true });
-  return [
-    { f: VIGNETTE_FIN, action: 'sifflet' },                              // la vignette s'ouvre (coup de sifflet final)
-    { f: H0, action: 'frappe' },                                         // « PSG / BAT / NICE » mot par mot
-    ...(d.gagnant !== null ? [{ f: H0 + 28, action: 'clic' as const, secondaire: true }] : []), // soulignement du vainqueur
-    { f: R1, action: 'raccord' },                                        // le soulignement devient la carte
-    { f: S0 + 14 + CONTACT, action: 'impact' },                          // le score se pose (ressort, contact)
-    { f: t.F - 14 + CONTACT, action: 'ding' },                           // le logo Scorro se pose (FinV3)
-  ];
-};
-export const sonsStoryApresFluideV2 = (d: any): Son[] => sonsScorro(tempsApres({ ...d, story: true }).total, planBruitages(evenementsStoryApres(d), { graine: graineDe({ id: d.fixtureId ?? 0 }), ...OPTIONS_SONS }), d.diagSons ?? {});
-// Vidéo après-match (non story) : fond en silence (25/11 15:50) ; 2 à 3 sons ponctuels aux moments forts seulement
-// (score qui se pose, stats, fin ; au moins 3 s entre deux sons). Sifflet, whoosh, clics, souffle et « réussite » longue coupés (douteux).
 export const sonsApresV3 = (d: any): Son[] => {
   const t = tempsApres(d);
   return [
+    { f: 0, src: 'sons/fond-a.mp3', volume: 0.45, duree: t.F },
+    { f: VIGNETTE_FIN, src: 'sons/sifflet-court.mp3', volume: 0.15, duree: 40 },
+    { f: H0 + 28, src: 'sons/v3/clic-1.wav', volume: 0.16 },
+    { f: R1, src: 'sons/whoosh-2.mp3', volume: 0.2, duree: 30 },
     { f: S0 + 8, src: 'sons/v3/impact-1.wav', volume: 0.16 },
-    ...(!d.story && d.statsCles?.length ? [{ f: t.T + 14, src: 'sons/v3/pop-2.wav', volume: 0.13 }] : []),
-    { f: t.F, src: 'sons/v3/impact-2.wav', volume: 0.14 },
+    { f: S0 + 14, src: 'sons/v3/reussite-1.wav', volume: 0.16, duree: 60 },
+    ...(!d.story && d.statsCles?.length ? [{ f: t.T, src: 'sons/whoosh-2.mp3', volume: 0.18, duree: 30 }, { f: t.T + 14, src: 'sons/v3/pop-2.wav', volume: 0.15 }] : []),
+    ...(!d.story ? [{ f: t.Q - 4, src: 'sons/v3/souffle-1.wav', volume: 0.18 }, { f: t.Q + 38, src: 'sons/v3/clic-2.wav', volume: 0.15 }] : []),
+    { f: t.F, src: 'sons/v3/impact-2.wav', volume: 0.16 },
   ];
 };
 export const ApresMatchV3: React.FC<any> = (d) => {
@@ -170,7 +159,7 @@ export const ApresMatchV3: React.FC<any> = (d) => {
       {!d.story && <><Disque debut={t.Q} /><Sequence from={t.Q} durationInFrames={QUESTION + 10}><Question /></Sequence></>}
       <Sequence from={t.F - 8}><FinV3 p={d.story ? P : CLAIR} /></Sequence>
       <OuvertureVignette format="apres-match" data={d} />
-      {d.sons && <Sons liste={d.story ? (d.sonsAnciens ? sonsStoryApresFluide(d) : sonsStoryApresFluideV2(d)) : sonsApresV3(d)} />}
+      {d.sons && <Sons liste={sonsApresV3(d)} />}
       <Grain />
     </AbsoluteFill>
   );

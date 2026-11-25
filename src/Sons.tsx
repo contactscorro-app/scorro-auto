@@ -4,11 +4,9 @@ import { Audio, Sequence, interpolate, staticFile } from 'remotion';
 export type Cue = { frame: number; fichier: string; volume: number; duree?: number; boucle?: boolean; entree?: number; sortie?: number; depart?: number };
 const fondu = (volume: number, duree: number, fin = 12, debut = 4) => (f: number) =>
   volume * interpolate(f, [0, debut, Math.max(debut + 1, duree - fin), duree], [0, 1, 1, 0], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' });
-// FOND EN SILENCE (25/11 15:50, l'éditeur) : aucun son continu n'est joué (fond, foule, clameur, stade, applaudissements, ou plus de 2 s), quel que soit le plan.
-const CONTINU = /^(fond|clameur|stade|applaudissements|foule|nappe|ambiance)/;
 export const Mixage: React.FC<{ cues: Cue[] }> = ({ cues }) => (
   <>
-    {cues.filter((c) => !c.boucle && !CONTINU.test(c.fichier) && (c.duree ?? 90) <= 60).map((c, i) => (
+    {cues.map((c, i) => (
       <Sequence key={i} from={Math.max(0, c.frame)} durationInFrames={c.duree ?? 90}>
         <Audio src={staticFile(`sons/${c.fichier}.mp3`)} loop={c.boucle} startFrom={c.depart ?? 0} volume={fondu(c.volume, c.duree ?? 90, c.sortie ?? 12, c.entree ?? 4)} />
       </Sequence>
@@ -75,9 +73,7 @@ export function planSonsGen(id: number, total: number, coupes: number[], moments
 // Vidéo de présentation : un fond calme et UNIFORME sur toute la durée (aucune ambiance de match), whoosh n°2 à chaque transition. Rien d'autre, aucune musique.
 export function planSonsPresentation(nPlans: number, parPlan: number, fin: number, fichier: string, volume = 0.1): Cue[] {
   const total = nPlans * parPlan + fin;
-  // Fond retiré le 25/11 (silence) : `fichier` et `volume` ne servent plus ; seuls restent les whoosh de transition.
-  void fichier; void volume; void total;
-  const cues: Cue[] = [];
+  const cues: Cue[] = [{ frame: 0, fichier, volume, duree: total, entree: 24, sortie: 24 }];
   for (let i = 1; i <= nPlans; i++) cues.push({ frame: i * parPlan - 6, fichier: 'whoosh-2', volume: 0.22, duree: 36 });
   return cues;
 }

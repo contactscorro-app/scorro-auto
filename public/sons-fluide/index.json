@@ -1,852 +1,113 @@
 {
  "chiffres": [
-  {
-   "fichier": "chiffres/compteur-1.wav",
-   "source": "compteur qui défile : 14 tics earshot `tick/key`, accélération puis ralenti",
-   "licence": "montage maison de sons rendus par earshot (MIT, libres de tout usage)",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "chiffres/compteur-2.wav",
-   "source": "compteur qui défile : 20 tics earshot `tick/key`, accélération puis ralenti",
-   "licence": "montage maison de sons rendus par earshot (MIT, libres de tout usage)",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "chiffres/ding-1.wav",
-   "source": "earshot `--sound tick/glass` (graine 24, prise 1)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "chiffres/ding-2.wav",
-   "source": "earshot `--sound tick/glass` (graine 24, prise 2)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "chiffres/ding-clair.wav",
-   "source": "earshot `--sound notify/single` (graine 24, prise 1) --pitch E6",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "chiffres/tic-1.wav",
-   "source": "earshot `--sound tick/key` (graine 24, prise 1)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "chiffres/tic-2.wav",
-   "source": "earshot `--sound tick/key` (graine 24, prise 2)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "chiffres/tic-3.wav",
-   "source": "earshot `--sound tick/key` (graine 24, prise 3)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "chiffres/tic-bois-1.wav",
-   "source": "earshot `--sound tick/wood` (graine 24, prise 1)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "chiffres/tic-bois-2.wav",
-   "source": "earshot `--sound tick/wood` (graine 24, prise 2)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  }
+  "chiffres/compteur-1.wav",
+  "chiffres/compteur-2.wav",
+  "chiffres/ding-1.wav",
+  "chiffres/ding-2.wav",
+  "chiffres/ding-clair.wav",
+  "chiffres/tic-1.wav",
+  "chiffres/tic-2.wav",
+  "chiffres/tic-3.wav",
+  "chiffres/tic-bois-1.wav",
+  "chiffres/tic-bois-2.wav"
  ],
  "foot": [
-  {
-   "fichier": "foot/ballon-frappe-1.wav",
-   "source": "earshot `--sound ball/kick` (graine 24, prise 1)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "foot/ballon-frappe-2.wav",
-   "source": "earshot `--sound ball/kick` (graine 24, prise 2)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "foot/ballon-frappe-3.wav",
-   "source": "earshot `--sound ball/kick` (graine 24, prise 3)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "foot/ballon-reel-1.wav",
-   "source": "Openverse → https://freesound.org/people/musita182/sounds/261267 — « Soccer Kick.wav » par musita182 (extrait 0.0-0.8 s ; licence vérifiée sur la fiche : fiche : « Creative Commons 0 »)",
-   "licence": "CC0 1.0 (domaine public) — https://creativecommons.org/publicdomain/zero/1.0/",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "foot/ballon-reel-2.wav",
-   "source": "Openverse → https://freesound.org/people/volivieri/sounds/37157 — « soccer kick 02.wav » par volivieri (extrait 0.0-1.1 s ; licence vérifiée sur la fiche : fiche : « creativecommons.org/licenses/by/4.0 »)",
-   "licence": "CC BY 4.0 — CRÉDIT OBLIGATOIRE : « soccer kick 02.wav » par volivieri (https://freesound.org/people/volivieri/sounds/37157), CC BY 4.0 — https://creativecommons.org/licenses/by/4.0/",
-   "usage": "commercial",
-   "credit": "« soccer kick 02.wav » par volivieri (https://freesound.org/people/volivieri/sounds/37157), CC BY 4.0"
-  },
-  {
-   "fichier": "foot/but-cri-1.mp3",
-   "source": "Mixkit « Stadium joy shouting crowd (extrait 5 s) » (https://mixkit.co, sfx 3022), copie de ~/scorro-posts/sons-a-ecouter/02-stadium-joy-shouting-crowd.mp3",
-   "licence": "Mixkit Sound Effects Free License (usage commercial autorisé, sans compte) — https://mixkit.co/license/#sfxFree",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "foot/but-cri-2.mp3",
-   "source": "Mixkit « Male crowd cheering short » (https://mixkit.co, sfx 459), copie de ~/scorro-posts/sons-a-ecouter/04-male-crowd-cheering-short.mp3",
-   "licence": "Mixkit Sound Effects Free License (usage commercial autorisé, sans compte) — https://mixkit.co/license/#sfxFree",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "foot/filet-reel.wav",
-   "source": "Openverse → https://freesound.org/people/arfanile/sounds/667509 — « Footie near miss goal kick and rattling.mp3 » par arfanile (extrait 2.45-3.6 s ; licence vérifiée sur la fiche : fiche : « creativecommons.org/licenses/by/4.0 »)",
-   "licence": "CC BY 4.0 — CRÉDIT OBLIGATOIRE : « Footie near miss goal kick and rattling.mp3 » par arfanile (https://freesound.org/people/arfanile/sounds/667509), CC BY 4.0 — https://creativecommons.org/licenses/by/4.0/",
-   "usage": "commercial",
-   "credit": "« Footie near miss goal kick and rattling.mp3 » par arfanile (https://freesound.org/people/arfanile/sounds/667509), CC BY 4.0"
-  },
-  {
-   "fichier": "foot/foule-joie.wav",
-   "source": "earshot `--sound crowd/cheer` (graine 24, prise 1) --dur 3",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "foot/foule-oh-decue.wav",
-   "source": "Openverse → https://freesound.org/people/mrrap4food/sounds/619007 — « crowd `oh - - disappointed.mp3 » par mrrap4food (extrait 0.0-5.0 s ; licence vérifiée sur la fiche : fiche : « Creative Commons 0 »)",
-   "licence": "CC0 1.0 (domaine public) — https://creativecommons.org/publicdomain/zero/1.0/",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "foot/foule-ooh-1.wav",
-   "source": "Openverse → https://freesound.org/people/Quistard/sounds/237683 — « Football Crowd - Near Miss ooh - Southampton Vs Hull at Saint Mary's Stadium.wav » par Quistard (extrait 6.45-9.3 s ; licence vérifiée sur la fiche : fiche : « creativecommons.org/licenses/by/3.0 »)",
-   "licence": "CC BY 3.0 — CRÉDIT OBLIGATOIRE : « Football Crowd - Near Miss ooh - Southampton Vs Hull at Saint Mary's Stadium.wav » par Quistard (https://freesound.org/people/Quistard/sounds/237683), CC BY 3.0 — https://creativecommons.org/licenses/by/3.0/",
-   "usage": "commercial",
-   "credit": "« Football Crowd - Near Miss ooh - Southampton Vs Hull at Saint Mary's Stadium.wav » par Quistard (https://freesound.org/people/Quistard/sounds/237683), CC BY 3.0"
-  },
-  {
-   "fichier": "foot/foule-ooh-2.wav",
-   "source": "Openverse → https://freesound.org/people/Quistard/sounds/237683 — « Football Crowd - Near Miss ooh - Southampton Vs Hull at Saint Mary's Stadium.wav » par Quistard (extrait 2.55-5.3 s ; licence vérifiée sur la fiche : fiche : « creativecommons.org/licenses/by/3.0 »)",
-   "licence": "CC BY 3.0 — CRÉDIT OBLIGATOIRE : « Football Crowd - Near Miss ooh - Southampton Vs Hull at Saint Mary's Stadium.wav » par Quistard (https://freesound.org/people/Quistard/sounds/237683), CC BY 3.0 — https://creativecommons.org/licenses/by/3.0/",
-   "usage": "commercial",
-   "credit": "« Football Crowd - Near Miss ooh - Southampton Vs Hull at Saint Mary's Stadium.wav » par Quistard (https://freesound.org/people/Quistard/sounds/237683), CC BY 3.0"
-  },
-  {
-   "fichier": "foot/foule-ooh-3.wav",
-   "source": "Openverse → https://freesound.org/people/paulw2k/sounds/196464 — « Football-crowd-near-miss-from-freekick.wav » par paulw2k (extrait 1.35-4.5 s ; licence vérifiée sur la fiche : fiche : « creativecommons.org/licenses/by/4.0 »)",
-   "licence": "CC BY 4.0 — CRÉDIT OBLIGATOIRE : « Football-crowd-near-miss-from-freekick.wav » par paulw2k (https://freesound.org/people/paulw2k/sounds/196464), CC BY 4.0 — https://creativecommons.org/licenses/by/4.0/",
-   "usage": "commercial",
-   "credit": "« Football-crowd-near-miss-from-freekick.wav » par paulw2k (https://freesound.org/people/paulw2k/sounds/196464), CC BY 4.0"
-  },
-  {
-   "fichier": "foot/foule-ooh-4.wav",
-   "source": "Openverse → https://freesound.org/people/deleted_user_2104797/sounds/324890 — « Crowd Oooh.wav » par deleted_user_2104797 (extrait 10.7-13.6 s ; licence vérifiée sur la fiche : fiche : « Creative Commons 0 »)",
-   "licence": "CC0 1.0 (domaine public) — https://creativecommons.org/publicdomain/zero/1.0/",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "foot/sifflet-1.wav",
-   "source": "earshot `--sound whistle/referee` (graine 24, prise 1)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "foot/sifflet-2.wav",
-   "source": "earshot `--sound whistle/referee` (graine 24, prise 2)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "foot/sifflet-3.wav",
-   "source": "earshot `--sound whistle/referee` (graine 24, prise 3)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "foot/sifflet-arbitre.wav",
-   "source": "Openverse → https://freesound.org/people/Rosa-Orenes256/sounds/538422 — « Referee whistle sound.wav » par Rosa-Orenes256 (extrait 0.0-0.55 s ; licence vérifiée sur la fiche : fiche : « Creative Commons 0 »)",
-   "licence": "CC0 1.0 (domaine public) — https://creativecommons.org/publicdomain/zero/1.0/",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "foot/souffle-surprise.wav",
-   "source": "earshot `--sound gasp/breath` (graine 24, prise 1)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "foot/stade-ambiance-1.mp3",
-   "source": "Mixkit « Crowd at the stadium » (https://mixkit.co, sfx 2111), copie de ~/scorro-posts/sons-a-ecouter/03-crowd-at-the-stadium.mp3",
-   "licence": "Mixkit Sound Effects Free License (usage commercial autorisé, sans compte) — https://mixkit.co/license/#sfxFree",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "foot/stade-ambiance-2.mp3",
-   "source": "Mixkit « Ambient sports crowd (extrait 20 s) » (https://mixkit.co), copie de ~/scorro-posts/sons-a-ecouter/11-ambient-sports-crowd-sound-1m16.mp3",
-   "licence": "Mixkit Sound Effects Free License (usage commercial autorisé, sans compte) — https://mixkit.co/license/#sfxFree",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "foot/tribunes-ambiance.mp3",
-   "source": "Openverse → https://freesound.org/people/D.jones/sounds/528799 — « 19 Football Crowd - Reaction To Goal.flac » par D.jones (extrait 0.3-10.3 s ; licence vérifiée sur la fiche : fiche : « Creative Commons 0 »)",
-   "licence": "CC0 1.0 (domaine public) — https://creativecommons.org/publicdomain/zero/1.0/",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "foot/tribunes-but.mp3",
-   "source": "Openverse → https://freesound.org/people/Quistard/sounds/237679 — « Football Crowd - Goal Cheer - Southampton Vs Hull at Saint Mary's Stadium.wav » par Quistard (extrait 32.3-37.6 s ; licence vérifiée sur la fiche : fiche : « creativecommons.org/licenses/by/3.0 »)",
-   "licence": "CC BY 3.0 — CRÉDIT OBLIGATOIRE : « Football Crowd - Goal Cheer - Southampton Vs Hull at Saint Mary's Stadium.wav » par Quistard (https://freesound.org/people/Quistard/sounds/237679), CC BY 3.0 — https://creativecommons.org/licenses/by/3.0/",
-   "usage": "commercial",
-   "credit": "« Football Crowd - Goal Cheer - Southampton Vs Hull at Saint Mary's Stadium.wav » par Quistard (https://freesound.org/people/Quistard/sounds/237679), CC BY 3.0"
-  }
+  "foot/ballon-frappe-1.wav",
+  "foot/ballon-frappe-2.wav",
+  "foot/ballon-frappe-3.wav",
+  "foot/but-cri-1.mp3",
+  "foot/but-cri-2.mp3",
+  "foot/foule-joie.wav",
+  "foot/sifflet-1.wav",
+  "foot/sifflet-2.wav",
+  "foot/sifflet-3.wav",
+  "foot/souffle-surprise.wav",
+  "foot/stade-ambiance-1.mp3",
+  "foot/stade-ambiance-2.mp3"
  ],
  "impact": [
-  {
-   "fichier": "impact/boom-1.wav",
-   "source": "earshot `--sound boom/heavy` (graine 24, prise 1) --dur 1.4",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "impact/boom-2.wav",
-   "source": "earshot `--sound boom/heavy` (graine 24, prise 2) --dur 1.4",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "impact/hit-1.wav",
-   "source": "earshot `--sound hit/drop` (graine 24, prise 1)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "impact/hit-2.wav",
-   "source": "earshot `--sound hit/drop` (graine 24, prise 2)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "impact/hit-3.wav",
-   "source": "earshot `--sound hit/drop` (graine 24, prise 3)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "impact/hit-titre-1.wav",
-   "source": "earshot `--sound slam/title` (graine 24, prise 1)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "impact/hit-titre-2.wav",
-   "source": "earshot `--sound slam/title` (graine 24, prise 2)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "impact/impact-forge_01.wav",
-   "source": "earshot forge, recette `impact` (match z 4.32, sonne comme : a cinematic hit with a long tail, a deep cinematic boom)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "impact/impact-forge_02.wav",
-   "source": "earshot forge, recette `impact` (match z 4.11, sonne comme : a cinematic hit with a long tail, a deep cinematic boom)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "impact/impact-forge_03.wav",
-   "source": "earshot forge, recette `impact` (match z 4.05, sonne comme : a deep cinematic boom, a deep cinematic whoosh)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "impact/impact-forge_04.wav",
-   "source": "earshot forge, recette `impact` (match z 4.00, sonne comme : a deep cinematic whoosh, a deep cinematic boom)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "impact/stinger-1.wav",
-   "source": "earshot `--sound sting/reveal` (graine 24, prise 1)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "impact/stinger-2.wav",
-   "source": "earshot `--sound sting/reveal` (graine 24, prise 2)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "impact/stinger-doux.wav",
-   "source": "earshot `--sound sting/soft` (graine 24, prise 1)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "impact/thump-forge_01.wav",
-   "source": "earshot forge, recette `thump` (match z 4.13, sonne comme : an explosion, a deep cinematic whoosh)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "impact/thump-forge_02.wav",
-   "source": "earshot forge, recette `thump` (match z 4.04, sonne comme : a big drum hit, a deep cinematic whoosh)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "impact/thump-forge_03.wav",
-   "source": "earshot forge, recette `thump` (match z 4.03, sonne comme : a big drum hit, a deep cinematic whoosh)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "impact/thump-forge_04.wav",
-   "source": "earshot forge, recette `thump` (match z 3.91, sonne comme : a big drum hit, an explosion)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  }
+  "impact/boom-1.wav",
+  "impact/boom-2.wav",
+  "impact/hit-1.wav",
+  "impact/hit-2.wav",
+  "impact/hit-3.wav",
+  "impact/hit-titre-1.wav",
+  "impact/hit-titre-2.wav",
+  "impact/stinger-1.wav",
+  "impact/stinger-2.wav",
+  "impact/stinger-doux.wav"
  ],
  "interface": [
-  {
-   "fichier": "interface/clic-1.wav",
-   "source": "earshot `--sound click/trackpad` (graine 24, prise 1)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "interface/clic-2.wav",
-   "source": "earshot `--sound click/trackpad` (graine 24, prise 2)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "interface/clic-forge_01.wav",
-   "source": "earshot forge, recette `click` (match z 4.17, sonne comme : a soft key release click, crisp hi-hats)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "interface/clic-forge_02.wav",
-   "source": "earshot forge, recette `click` (match z 4.09, sonne comme : crisp hi-hats, a soft key release click)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "interface/clic-forge_03.wav",
-   "source": "earshot forge, recette `click` (match z 3.93, sonne comme : crisp hi-hats, a soft key release click)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "interface/clic-forge_04.wav",
-   "source": "earshot forge, recette `click` (match z 3.55, sonne comme : a soft key release click, a scroll wheel tick)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "interface/clic-souris.wav",
-   "source": "earshot `--sound click/mouse` (graine 24, prise 1)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "interface/notification-double.wav",
-   "source": "earshot `--sound notify/pair` (graine 24, prise 1)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "interface/notification-montante.wav",
-   "source": "earshot `--sound notify/lift` (graine 24, prise 1)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "interface/notification.wav",
-   "source": "earshot `--sound notify/single` (graine 24, prise 1)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "interface/scroll-1.wav",
-   "source": "earshot `--sound slide/panel` (graine 24, prise 1)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "interface/scroll-2.wav",
-   "source": "earshot `--sound slide/panel` (graine 24, prise 2)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "interface/swipe-1.wav",
-   "source": "earshot `--sound swipe/flick` (graine 24, prise 1)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "interface/swipe-2.wav",
-   "source": "earshot `--sound swipe/flick` (graine 24, prise 2)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "interface/swipe-3.wav",
-   "source": "earshot `--sound swipe/flick` (graine 24, prise 3)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "interface/swipe-forge_01.wav",
-   "source": "earshot forge, recette `swipe` (match z 3.99, sonne comme : a fast whoosh, a soft air whoosh)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "interface/swipe-forge_02.wav",
-   "source": "earshot forge, recette `swipe` (match z 3.83, sonne comme : a fast whoosh, a short swish)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "interface/swipe-forge_03.wav",
-   "source": "earshot forge, recette `swipe` (match z 3.81, sonne comme : a fast whoosh, a soft air whoosh)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "interface/swipe-forge_04.wav",
-   "source": "earshot forge, recette `swipe` (match z 3.52, sonne comme : a fast whoosh, a deep cinematic whoosh)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "interface/tap-1.wav",
-   "source": "earshot `--sound tap/tone` (graine 24, prise 1)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "interface/tap-2.wav",
-   "source": "earshot `--sound tap/tone` (graine 24, prise 2)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "interface/tap-3.wav",
-   "source": "earshot `--sound tap/tone` (graine 24, prise 3)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "interface/toggle-off.wav",
-   "source": "earshot `--sound toggle/down` (graine 24, prise 1)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "interface/toggle-on.wav",
-   "source": "earshot `--sound toggle/up` (graine 24, prise 1)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "interface/vibration-1.wav",
-   "source": "earshot `--sound phone/vibrate` (graine 24, prise 1) --dur 0.9",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "interface/vibration-2.wav",
-   "source": "earshot `--sound phone/vibrate` (graine 24, prise 2) --dur 0.9",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  }
+  "interface/clic-1.wav",
+  "interface/clic-2.wav",
+  "interface/clic-souris.wav",
+  "interface/notification-double.wav",
+  "interface/notification-montante.wav",
+  "interface/notification.wav",
+  "interface/scroll-1.wav",
+  "interface/scroll-2.wav",
+  "interface/swipe-1.wav",
+  "interface/swipe-2.wav",
+  "interface/swipe-3.wav",
+  "interface/tap-1.wav",
+  "interface/tap-2.wav",
+  "interface/tap-3.wav",
+  "interface/toggle-off.wav",
+  "interface/toggle-on.wav",
+  "interface/vibration-1.wav",
+  "interface/vibration-2.wav"
  ],
  "mouvement": [
-  {
-   "fichier": "mouvement/chute-air.wav",
-   "source": "earshot `--sound fall/air` (graine 24, prise 1)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "mouvement/drop-1.wav",
-   "source": "earshot `--sound downlifter/air_fall` (graine 24, prise 1)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "mouvement/drop-2.wav",
-   "source": "earshot `--sound downlifter/air_fall` (graine 24, prise 2)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "mouvement/glissement-1.wav",
-   "source": "earshot `--sound swipe/cloth` (graine 24, prise 1)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "mouvement/glissement-2.wav",
-   "source": "earshot `--sound swipe/cloth` (graine 24, prise 2)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "mouvement/rise-1.wav",
-   "source": "earshot `--sound rise/air` (graine 24, prise 1) --dur 1.6",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "mouvement/rise-2.wav",
-   "source": "earshot `--sound rise/air` (graine 24, prise 2) --dur 1.6",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "mouvement/rise-forge_01.wav",
-   "source": "earshot forge, recette `riser` (match z 3.89, sonne comme : a reverse cymbal swell, a rising riser building tension)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "mouvement/rise-forge_02.wav",
-   "source": "earshot forge, recette `riser` (match z 3.74, sonne comme : a downlifter falling sweep, a reverse cymbal swell)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "mouvement/rise-forge_03.wav",
-   "source": "earshot forge, recette `riser` (match z 3.69, sonne comme : a reverse cymbal swell, an uplifter sweep)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "mouvement/rise-forge_04.wav",
-   "source": "earshot forge, recette `riser` (match z 3.61, sonne comme : a reverse cymbal swell, a rising riser building tension)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "mouvement/rise-tonal.wav",
-   "source": "earshot `--sound riser/tone` (graine 24, prise 1) --dur 1.6",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "mouvement/whoosh-air-1.wav",
-   "source": "earshot `--sound whoosh/airy` (graine 24, prise 1)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "mouvement/whoosh-air-2.wav",
-   "source": "earshot `--sound whoosh/airy` (graine 24, prise 2)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "mouvement/whoosh-court-1.wav",
-   "source": "earshot `--sound whoosh/soft` (graine 24, prise 1)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "mouvement/whoosh-court-2.wav",
-   "source": "earshot `--sound whoosh/soft` (graine 24, prise 2)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "mouvement/whoosh-court-3.wav",
-   "source": "earshot `--sound whoosh/soft` (graine 24, prise 3)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "mouvement/whoosh-forge_01.wav",
-   "source": "earshot forge, recette `whoosh` (match z 4.97, sonne comme : a fast whoosh, a stick swung fast through the air)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "mouvement/whoosh-forge_02.wav",
-   "source": "earshot forge, recette `whoosh` (match z 4.86, sonne comme : a fast whoosh, a stick swung fast through the air)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "mouvement/whoosh-forge_03.wav",
-   "source": "earshot forge, recette `whoosh` (match z 4.66, sonne comme : a fast whoosh, a whip pan transition)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "mouvement/whoosh-forge_04.wav",
-   "source": "earshot forge, recette `whoosh` (match z 4.55, sonne comme : a fast whoosh, a stick swung fast through the air)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "mouvement/whoosh-long-1.wav",
-   "source": "earshot `--sound whoosh/deep` (graine 24, prise 1)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "mouvement/whoosh-long-2.wav",
-   "source": "earshot `--sound whoosh/deep` (graine 24, prise 2)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "mouvement/whoosh-vif-1.wav",
-   "source": "earshot `--sound whoosh/fast` (graine 24, prise 1)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "mouvement/whoosh-vif-2.wav",
-   "source": "earshot `--sound whoosh/fast` (graine 24, prise 2)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "mouvement/zoom-arriere-1.wav",
-   "source": "earshot `--sound swoosh/out` (graine 24, prise 1)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "mouvement/zoom-arriere-2.wav",
-   "source": "earshot `--sound swoosh/out` (graine 24, prise 2)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "mouvement/zoom-avant-1.wav",
-   "source": "earshot `--sound swoosh/in` (graine 24, prise 1)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "mouvement/zoom-avant-2.wav",
-   "source": "earshot `--sound swoosh/in` (graine 24, prise 2)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  }
+  "mouvement/chute-air.wav",
+  "mouvement/drop-1.wav",
+  "mouvement/drop-2.wav",
+  "mouvement/glissement-1.wav",
+  "mouvement/glissement-2.wav",
+  "mouvement/rise-1.wav",
+  "mouvement/rise-2.wav",
+  "mouvement/rise-tonal.wav",
+  "mouvement/whoosh-air-1.wav",
+  "mouvement/whoosh-air-2.wav",
+  "mouvement/whoosh-court-1.wav",
+  "mouvement/whoosh-court-2.wav",
+  "mouvement/whoosh-court-3.wav",
+  "mouvement/whoosh-long-1.wav",
+  "mouvement/whoosh-long-2.wav",
+  "mouvement/whoosh-vif-1.wav",
+  "mouvement/whoosh-vif-2.wav",
+  "mouvement/zoom-arriere-1.wav",
+  "mouvement/zoom-arriere-2.wav",
+  "mouvement/zoom-avant-1.wav",
+  "mouvement/zoom-avant-2.wav"
  ],
  "nappes": [
-  {
-   "fichier": "nappes/ambiance-piece.mp3",
-   "source": "earshot `--sound room_tone/quiet` (20 s, boucle)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "nappes/nappe-air.mp3",
-   "source": "earshot `--sound pad/air` (20 s, boucle)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "nappes/nappe-chaude.mp3",
-   "source": "earshot `--sound pad/warm` (20 s, boucle)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  }
+  "nappes/ambiance-piece.mp3",
+  "nappes/nappe-air.mp3",
+  "nappes/nappe-chaude.mp3"
  ],
  "reussite": [
-  {
-   "fichier": "reussite/cash.wav",
-   "source": "earshot `--sound cash_register/open` (graine 24, prise 1) --dur 1.6",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "reussite/level-up.wav",
-   "source": "earshot `--sound level_up/fanfare` (graine 24, prise 1)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "reussite/pieces.wav",
-   "source": "earshot `--sound coin/cup` (graine 24, prise 1)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "reussite/sparkle-1.wav",
-   "source": "earshot `--sound shine/air` (graine 24, prise 1)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "reussite/sparkle-2.wav",
-   "source": "earshot `--sound shine/air` (graine 24, prise 2)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "reussite/sparkle-balaye.wav",
-   "source": "earshot `--sound shine/sweep` (graine 24, prise 1)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "reussite/succes.wav",
-   "source": "earshot `--sound success/triad` (graine 24, prise 1)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  }
+  "reussite/cash.wav",
+  "reussite/level-up.wav",
+  "reussite/pieces.wav",
+  "reussite/sparkle-1.wav",
+  "reussite/sparkle-2.wav",
+  "reussite/sparkle-balaye.wav",
+  "reussite/succes.wav"
  ],
  "texte": [
-  {
-   "fichier": "texte/bulle-pop-1.wav",
-   "source": "earshot `--sound pop/bubble` (graine 24, prise 1)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "texte/bulle-pop-2.wav",
-   "source": "earshot `--sound pop/bubble` (graine 24, prise 2)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "texte/bulle-pop-douce-1.wav",
-   "source": "earshot `--sound pop/soft` (graine 24, prise 1)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "texte/bulle-pop-douce-2.wav",
-   "source": "earshot `--sound pop/soft` (graine 24, prise 2)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "texte/frappe-douce-1.wav",
-   "source": "earshot `--sound keyboard/laptop` (graine 24, prise 1)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "texte/frappe-douce-2.wav",
-   "source": "earshot `--sound keyboard/laptop` (graine 24, prise 2)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "texte/frappe-douce-3.wav",
-   "source": "earshot `--sound keyboard/laptop` (graine 24, prise 3)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "texte/frappe-forge_01.wav",
-   "source": "earshot forge, recette `keypress` (match z 5.60, sonne comme : a single mechanical keyboard key press, a soft key release click)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "texte/frappe-forge_02.wav",
-   "source": "earshot forge, recette `keypress` (match z 5.47, sonne comme : a single mechanical keyboard key press, a soft key release click)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "texte/frappe-forge_03.wav",
-   "source": "earshot forge, recette `keypress` (match z 5.45, sonne comme : a single mechanical keyboard key press, a soft key release click)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "texte/frappe-forge_04.wav",
-   "source": "earshot forge, recette `keypress` (match z 5.36, sonne comme : a single mechanical keyboard key press, a soft key release click)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "texte/frappe-mecanique-1.wav",
-   "source": "earshot `--sound keyboard/mechanical` (graine 24, prise 1)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "texte/frappe-mecanique-2.wav",
-   "source": "earshot `--sound keyboard/mechanical` (graine 24, prise 2)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "texte/frappe-mecanique-3.wav",
-   "source": "earshot `--sound keyboard/mechanical` (graine 24, prise 3)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "texte/machine-a-ecrire-1.wav",
-   "source": "earshot `--sound typewriter/key` (graine 24, prise 1)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "texte/machine-a-ecrire-2.wav",
-   "source": "earshot `--sound typewriter/key` (graine 24, prise 2)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "texte/pop-forge_01.wav",
-   "source": "earshot forge, recette `popin` (match z 2.88, sonne comme : a punchy impact hit, a kick drum)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "texte/pop-forge_02.wav",
-   "source": "earshot forge, recette `popin` (match z 2.80, sonne comme : a wooden block hit, a punchy impact hit)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "texte/pop-forge_03.wav",
-   "source": "earshot forge, recette `popin` (match z 2.74, sonne comme : a punchy impact hit, a kick drum)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "texte/pop-forge_04.wav",
-   "source": "earshot forge, recette `popin` (match z 2.72, sonne comme : a punchy impact hit, a kick drum)",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "texte/stylo-1.wav",
-   "source": "earshot `--sound pencil/write` (graine 24, prise 1) --dur 1.6",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  },
-  {
-   "fichier": "texte/stylo-2.wav",
-   "source": "earshot `--sound pencil/write` (graine 24, prise 2) --dur 1.6",
-   "licence": "earshot (MIT) — son rendu par nous, libre de tout usage, commercial compris, sans crédit",
-   "usage": "commercial"
-  }
+  "texte/bulle-pop-1.wav",
+  "texte/bulle-pop-2.wav",
+  "texte/bulle-pop-douce-1.wav",
+  "texte/bulle-pop-douce-2.wav",
+  "texte/frappe-douce-1.wav",
+  "texte/frappe-douce-2.wav",
+  "texte/frappe-douce-3.wav",
+  "texte/frappe-mecanique-1.wav",
+  "texte/frappe-mecanique-2.wav",
+  "texte/frappe-mecanique-3.wav",
+  "texte/machine-a-ecrire-1.wav",
+  "texte/machine-a-ecrire-2.wav",
+  "texte/stylo-1.wav",
+  "texte/stylo-2.wav"
  ]
 }

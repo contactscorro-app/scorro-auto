@@ -3,8 +3,6 @@ import { AbsoluteFill, Img, Sequence, interpolate, staticFile, useCurrentFrame, 
 import { Photo } from '../commun';
 import { FinV3, FondV3, Grain, Mots, PALETTES, Sons, Verre, arrivee, doux, flouVitesse, taillePourLargeur, usePolice, vitesse, POLICE, type Pal, type Son } from './kit';
 import { OuvertureVignette, VIGNETTE_FIN } from './Vignettes';
-import { planBruitages, type Evenement } from './sonsFluide';
-import { CONTACT, OPTIONS_SONS, graineDe, sonsScorro } from './sonsScorro';
 
 // ② Duel « X ou Y ? », style v3. Données : data/format-duel-<ligue>.json (buts recoupés avec les événements, stats Sportmonks de la saison).
 // Image 0 = vignette → « SINAYOKO / OU / GOUIRI ? » → le soulignement devient la carte : les deux joueurs arrivent de chaque côté, puis 5 stats,
@@ -99,22 +97,6 @@ export const sonsDuelV3 = (d: any): Son[] => {
     { f: t.F, src: 'sons/v3/reussite-1.wav', volume: 0.15, duree: 60 },
   ];
 };
-// Méthode sons du 24/11 (étendue au duel le 25/11) : voir AvantJourneeV3. Les stats arrivent toutes les 1,1 s : clics discrets (secondaires).
-export const evenementsDuel = (d: any): Evenement[] => {
-  const t = tempsDuel(d);
-  return [
-    { f: VIGNETTE_FIN, action: 'sifflet' },                              // la vignette s'ouvre
-    { f: H0, action: 'frappe' },                                         // « A / OU / B ? »
-    { f: H0 + 30, action: 'clic', secondaire: true },                    // soulignement du 2e nom
-    { f: R1, action: 'raccord' },                                        // le soulignement devient la carte
-    { f: C0 + 4 + CONTACT, action: 'impact', secondaire: true },         // les deux joueurs se posent
-    ...Array.from({ length: t.n }, (_, i) => ({ f: S0 + i * PAR + CONTACT, action: 'clic' as const, secondaire: true })), // chaque ligne de stats se pose
-    { f: t.R2 - 4, action: 'zoomAvant' },                                // le disque clair devient le fond
-    { f: t.R2, action: 'frappe' },                                       // « TU PRENDS QUI ? »
-    { f: t.F - 14 + CONTACT, action: 'ding' },                           // le logo Scorro se pose (FinV3)
-  ];
-};
-export const sonsDuelFluide = (d: any): Son[] => sonsScorro(tempsDuel(d).total, planBruitages(evenementsDuel(d), { graine: graineDe({ matchs: [d.a, d.b] }), ...OPTIONS_SONS }), d.diagSons ?? {});
 export const DuelV3: React.FC<any> = (d) => {
   const t = tempsDuel(d);
   return (
@@ -127,7 +109,7 @@ export const DuelV3: React.FC<any> = (d) => {
       <Sequence from={t.R2} durationInFrames={QUESTION + 10}><Question /></Sequence>
       <Sequence from={t.F - 8}><FinV3 p={CLAIR} /></Sequence>
       <OuvertureVignette format="duel" data={d} />
-      {d.sons && <Sons liste={d.sonsAnciens ? sonsDuelV3(d) : sonsDuelFluide(d)} />}
+      {d.sons && <Sons liste={sonsDuelV3(d)} />}
       <Grain />
     </AbsoluteFill>
   );

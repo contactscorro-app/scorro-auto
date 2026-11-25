@@ -3,8 +3,6 @@ import { AbsoluteFill, Img, Sequence, interpolate, staticFile, useCurrentFrame, 
 import { Photo } from '../commun';
 import { FinV3, FondV3, Grain, Mots, PALETTES, Sons, Verre, arrivee, doux, flouVitesse, taillePourLargeur, usePolice, vitesse, POLICE, type Pal, type Son } from './kit';
 import { VignetteFormat } from './Vignettes';
-import { planBruitages, type Evenement } from './sonsFluide';
-import { CONTACT, OPTIONS_SONS, graineDe, sonsScorro } from './sonsScorro';
 
 // ① Top 5 buteurs, style v3 (vidéo test du 22/11). Données : data/format-top5-<ligue>.json (recoupé avec /topscorers).
 // Image 0 = vignette. Puis : accroche mot par mot (« QUI EST / LE N°1 ? », soulignement lumineux sur N°1) → le soulignement devient la carte de verre
@@ -123,20 +121,6 @@ export const sonsTop5V3 = (n = 5): Son[] => [
   { f: Q + 30, src: 'sons/v3/clic-2.wav', volume: 0.18 },
   { f: FIN, src: 'sons/v3/impact-2.wav', volume: 0.2 },
 ];
-// Méthode sons du 24/11 (étendue au top 5 le 25/11) : voir AvantJourneeV3. Une ligne par seconde : contact discret (secondaire), le n°1 marquant.
-export const evenementsTop5 = (n = 5): Evenement[] => [
-  { f: V, action: 'sifflet' },                                          // la vignette s'ouvre
-  { f: H0, action: 'frappe' },                                          // « QUI EST LE N°1 ? »
-  { f: H0 + 30, action: 'clic', secondaire: true },                     // soulignement de N°1
-  { f: R1, action: 'raccord' },                                         // le soulignement devient la carte
-  ...Array.from({ length: n - 1 }, (_, i) => ({ f: debutLigne(i, n) + CONTACT, action: 'impact' as const, secondaire: true })), // lignes 5e → 2e
-  { f: debutLigne(n - 1, n) + CONTACT, action: 'impact' },               // le n°1 se pose
-  { f: R2, action: 'zoomAvant' },                                       // le disque sombre devient le fond
-  { f: Q, action: 'frappe' },                                           // « TU L'AVAIS VU VENIR ? »
-  { f: Q + 30, action: 'clic', secondaire: true },                      // soulignement de VENIR
-  { f: FIN - 16, action: 'ding' },                                      // le logo Scorro se pose (FinV3 à FIN-16, ressort à −6)
-];
-export const sonsTop5Fluide = (d: any): Son[] => sonsScorro(DUREE_TOP5_V3, planBruitages(evenementsTop5(d.top.length), { graine: graineDe({ matchs: d.top }), ...OPTIONS_SONS }), d.diagSons ?? {});
 export const Top5V3: React.FC<any> = (d) => (
   <AbsoluteFill style={{ fontFamily: POLICE }}>
     <FondV3 p={P} />
@@ -144,7 +128,7 @@ export const Top5V3: React.FC<any> = (d) => (
     <Disque /><Question />
     <Sequence from={FIN - 16}><FinV3 p={SOMBRE} /></Sequence>
     <Ouverture d={d} />
-    {d.sons && <Sons liste={d.sonsAnciens ? sonsTop5V3(d.top.length) : sonsTop5Fluide(d)} />}
+    {d.sons && <Sons liste={sonsTop5V3(d.top.length)} />}
     <Grain />
   </AbsoluteFill>
 );

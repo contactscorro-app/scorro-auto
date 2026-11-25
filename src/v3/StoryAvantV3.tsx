@@ -2,9 +2,7 @@ import React from 'react';
 import { AbsoluteFill, Img, Sequence, interpolate, staticFile, useCurrentFrame, useVideoConfig } from 'remotion';
 import { FinV3, FondV3, Grain, Mots, PALETTES, Sons, Verre, arrivee, doux, flouVitesse, taillePourLargeur, usePolice, vitesse, POLICE, type Son } from './kit';
 import { OuvertureVignette, VIGNETTE_FIN } from './Vignettes';
-import { planBruitages as planBruitagesAncien, NAPPES, VOLUME_NAPPE } from './sons';
-import { planBruitages, type Evenement } from './sonsFluide';
-import { CONTACT, OPTIONS_SONS, graineDe, sonsScorro } from './sonsScorro';
+import { planBruitages, NAPPES, VOLUME_NAPPE } from './sons';
 
 // Story avant-match, style v3 (≈ 8 s). Données : data/avant-match-<id>.json. Image 0 = vignette → « TON / PRONO ? » → le soulignement devient la carte :
 // écussons qui tombent, heure, « 1, N ou 2 ? » → fin Scorro. Pas de « commentaire » : une story n'en a pas.
@@ -55,7 +53,7 @@ const Contenu: React.FC<{ d: any }> = ({ d }) => {
 // Nouvelle banque (24/11) : un son par action clé, au plus ~1 marquant / 2 s, nappe de stade basse.
 export const sonsStoryAvantV3Fluide = (id = 0): Son[] => [
   { f: 0, src: NAPPES.stade, volume: VOLUME_NAPPE * 1.6, duree: F + 40 },
-  ...planBruitagesAncien([
+  ...planBruitages([
     { f: VIGNETTE_FIN, action: 'carte' },          // la vignette part
     { f: H0, action: 'frappe' },                   // « TON PRONO ? »
     { f: R1, action: 'raccord' },                  // le soulignement devient la carte
@@ -75,17 +73,6 @@ export const sonsStoryAvantV3 = (): Son[] => [
   { f: C0 + 40, src: 'sons/v3/clic-2.wav', volume: 0.15 },
   { f: F, src: 'sons/v3/impact-2.wav', volume: 0.16 },
 ];
-// Méthode sons du 24/11 (skill video-fluide, étendue aux stories le 25/11) : voir AvantJourneeV3. Chaque son tombe sur l'image exacte du mouvement.
-export const evenementsStoryAvant = (): Evenement[] => [
-  { f: VIGNETTE_FIN, action: 'sifflet' },                 // la vignette s'ouvre
-  { f: H0, action: 'frappe' },                            // « TON PRONO ? » mot par mot
-  { f: H0 + 24, action: 'clic', secondaire: true },       // soulignement de PRONO
-  { f: R1, action: 'raccord' },                           // le soulignement devient la carte
-  { f: C0 + 2 + CONTACT, action: 'impact' },              // le 1er écusson se pose (le 2e suit, sans son)
-  { f: C0 + 40, action: 'bulle', secondaire: true },      // « 1, N ou 2 ? » arrive
-  { f: F - 14 + CONTACT, action: 'ding' },                // le logo Scorro se pose (FinV3)
-];
-export const sonsStoryAvantFluide = (d: any): Son[] => sonsScorro(DUREE_STORY_AVANT_V3, planBruitages(evenementsStoryAvant(), { graine: graineDe({ id: d.fixtureId ?? 0 }), ...OPTIONS_SONS }), d.diagSons ?? {});
 export const StoryAvantV3: React.FC<any> = (d) => (
   <AbsoluteFill style={{ fontFamily: POLICE }}>
     <FondV3 p={P} />
@@ -94,7 +81,7 @@ export const StoryAvantV3: React.FC<any> = (d) => (
     <Sequence from={C0} durationInFrames={F - C0 + 8}><Contenu d={d} /></Sequence>
     <Sequence from={F - 8}><FinV3 p={P} /></Sequence>
     <OuvertureVignette format="avant-match" data={d} />
-    {d.sons && <Sons liste={d.sonsAnciens ? sonsStoryAvantV3Fluide(d.fixtureId ?? 0) : sonsStoryAvantFluide(d)} />}
+    {d.sons && <Sons liste={sonsStoryAvantV3()} />}
     <Grain />
   </AbsoluteFill>
 );
