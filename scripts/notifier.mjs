@@ -6,6 +6,8 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 
 export function notifier(titre, texte, fichier, { ci = !!process.env.SCORRO_CI, depot = process.env.ETAT_REPO || 'contactscorro-app/scorro-etat', test = false, sansIssue = false } = {}) {
+  // Serveur : une simple information (sansIssue) ne crée pas d'issue (donc pas de courriel) ; elle va dans etat/notes-serveur.log, sauvegardé dans le dépôt d'état.
+  if (ci && sansIssue) { fs.mkdirSync('etat', { recursive: true }); fs.appendFileSync('etat/notes-serveur.log', `${new Date().toISOString()} | ${titre} | ${texte}\n`); return { canaux: ['note'] }; }
   if (ci) { fs.mkdirSync('out', { recursive: true }); fs.appendFileSync('out/notifications.jsonl', JSON.stringify({ titre, texte, fichier: fichier ?? null }) + '\n'); return { canaux: ['jsonl'] }; }
   const canaux = [];
   const net = (s) => String(s).replace(/["\\]/g, "'");

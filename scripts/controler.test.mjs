@@ -206,3 +206,66 @@ test('trêve : une vidéo top buteurs par jour prévu, à partir de 12 h', () =>
   assert.equal(ids(Date.parse('2026-11-11T08:00:00Z')), 0);
   assert.equal(ids(Date.parse('2026-11-12T12:00:00Z')), 0);
 });
+
+// Rythme (22/11) : 1 vidéo par jour, 2 les jours de match, une le matin (12-14 h) et une le soir (19-24 h).
+test('rythme : créneaux, plafond du jour et contenus gardés', async () => {
+  const { parisA } = await import('./decider.mjs');
+  const R = { actif: true, depuis: '2026-11-22T00:00:00Z', matin: ['12:00', '14:00'], soir: ['19:00', '24:00'], maxJour: 1, maxJourMatch: 2, liguesJourDeMatch: [301, 2], sansYoutube: ['classement'], joursMatch: ['2026-11-27'] };
+  const cfg = { rythme: R };
+  const t = { format: 'apres-journee', ligue: 301, poids: 5, prioritaire: true };
+  assert.equal(permis(t, 'tiktok', [], parisA('2026-11-23', 16), cfg).raison, 'hors créneau');
+  assert.ok(permis(t, 'tiktok', [], parisA('2026-11-23', 12), cfg).ok);
+  const une = [{ reseau: 'tiktok', t: parisA('2026-11-23', 12) }];
+  assert.equal(permis(t, 'tiktok', une, parisA('2026-11-23', 19), cfg).raison, 'plafond', 'jour sans match : 1 seule, même prioritaire');
+  const vendredi = [{ reseau: 'tiktok', t: parisA('2026-11-27', 12) }];
+  assert.ok(permis(t, 'tiktok', vendredi, parisA('2026-11-27', 19), cfg).ok, 'jour de match : la 2e part le soir');
+  assert.equal(permis(t, 'tiktok', vendredi, parisA('2026-11-27', 13), cfg).raison, 'créneau pris', 'jamais 2 le matin');
+  assert.ok(permis(t, 'instagram', une, parisA('2026-11-23', 19), cfg).ok, 'plafond compté par réseau');
+  assert.equal(permis(t, 'tiktok', [], parisA('2026-11-23', 3), cfg).raison, 'nuit');
+  // Contenus : pas d'avant-match ; le top buteurs du lundi part sans YouTube.
+  const lundi = parisA('2026-11-23', 12) + 5 * 60000;
+  const m = { id: 9, ligue: 384, round: 5, debut: lundi + 6 * HEURE, etat: 'NS', dom: 1, ext: 2 };
+  const ts = taches([m], { championnats: [384], apresJournee: [], joueursJournee: [], debutPublication: '2026-11-01', rythme: R }, lundi);
+  assert.ok(!ts.some((x) => x.format === 'avant-match'));
+  assert.deepEqual(ts.find((x) => x.format === 'classement')?.reseaux, ['instagram', 'tiktok']);
+});
+
+test('YouTube : 2 envois au plus par 24 h glissantes, les envois refusés ne comptent pas', async () => {
+  const { youtubeLibre } = await import('./decider.mjs');
+  const h = (n) => Date.parse('2026-11-21T00:00:00Z') + n * HEURE;
+  const p = [{ reseau: 'youtube', t: h(12) }, { reseau: 'youtube', t: h(19.5) }];
+  assert.equal(youtubeLibre(p, h(33)), false, 'le 22 à 9 h : 2 envois dans les 24 h');
+  assert.equal(youtubeLibre(p, h(37)), true, '24 h après le 1er : place libre');
+  assert.equal(youtubeLibre([...p, { reseau: 'youtube', t: h(40), echec: true }], h(37)), true);
+  assert.equal(youtubeLibre([{ reseau: 'youtube', t: h(30) }, { reseau: 'youtube', t: h(40) }], h(20)), false, 'envois programmés après comptés aussi');
+  assert.equal(youtubeLibre(p, h(15)), false);
+  assert.equal(permis({ format: 'apres-match' }, 'youtube', p, h(33), {}).raison, 'youtube 24 h');
+});
+
+test('stories : un avant-match devient une story à son heure, sans toucher au plafond des vidéos', async () => {
+  const { parisA } = await import('./decider.mjs');
+  const R = { actif: true, depuis: '2026-11-22T00:00:00Z', matin: ['12:00', '14:00'], soir: ['19:00', '24:00'], maxJour: 1, maxJourMatch: 2, liguesJourDeMatch: [301, 2], joursMatch: [] };
+  const t0 = parisA('2026-11-23', 18) + 5 * 60000;
+  const m = { id: 9, ligue: 301, round: 5, debut: t0 + HEURE, etat: 'NS', dom: 1, ext: 2 };
+  const base = { championnats: [301], apresJournee: [], joueursJournee: [], debutPublication: '2026-11-01', rythme: R };
+  assert.ok(!taches([m], base, t0).some((x) => x.story), 'stories inactives : rien');
+  const ts = taches([m], { ...base, stories: { actif: true } }, t0);
+  const s = ts.find((x) => x.cle === 'story-avant-9');
+  assert.ok(s && s.story && s.reseaux[0] === 'instagram-story');
+  assert.ok(!taches([{ ...m, ligue: 384 }], { ...base, championnats: [384], stories: { actif: true } }, t0).some((x) => x.story), 'petit match hors Ligue 1 : pas de story');
+  const une = [{ reseau: 'tiktok', t: parisA('2026-11-23', 12) }];
+  assert.ok(permis(s, 'instagram-story', une, t0, base).ok, 'hors créneau vidéo : la story part quand même');
+});
+
+test('formats : rendus la nuit d\'avant, créneau réservé au contenu automatique', async () => {
+  const { parisA, tachesFormats } = await import('./decider.mjs');
+  const R = { actif: true, depuis: '2026-11-22T00:00:00Z', matin: ['12:00', '14:00'], soir: ['19:00', '24:00'], maxJour: 1, maxJourMatch: 2, joursMatch: ['2026-11-24'] };
+  const cfg = { rythme: R, formats: { actif: true, envoi: false, nuit: [22, 7], calendrier: [{ date: '2026-11-23', creneau: 'matin', format: 'top5', ligue: 301 }, { date: '2026-11-24', creneau: 'matin', format: 'duel', ligue: 301 }] } };
+  assert.equal(tachesFormats(cfg, parisA('2026-11-22', 21)).length, 0, 'pas avant 22 h la veille');
+  const t = tachesFormats(cfg, parisA('2026-11-22', 23));
+  assert.equal(t.length, 1); assert.equal(t[0].format, 'f-top5'); assert.ok(t[0].depot);
+  const auto = { format: 'classement' };
+  assert.equal(permis(auto, 'tiktok', [], parisA('2026-11-23', 12), cfg).raison, 'plafond', 'lundi : le seul créneau est pris par le Top 5');
+  assert.equal(permis(auto, 'tiktok', [], parisA('2026-11-24', 12), cfg).raison, 'créneau pris', 'mardi matin réservé');
+  assert.ok(permis(auto, 'tiktok', [], parisA('2026-11-24', 20), cfg).ok, 'mardi soir libre (jour de C1)');
+});

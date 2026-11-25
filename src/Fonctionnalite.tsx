@@ -1,5 +1,5 @@
 import React from 'react';
-import { AbsoluteFill, Img, OffthreadVideo, Sequence, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig } from 'remotion';
+import { AbsoluteFill, Freeze, Img, OffthreadVideo, Sequence, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig } from 'remotion';
 import { C, Monte, Grain } from './commun';
 import { Fin, Fond } from './Presentation';
 import { Mixage, planSonsGen } from './Sons';
@@ -9,6 +9,26 @@ const LARGEUR = 600, HAUTEUR = Math.round((LARGEUR * 2622) / 1206);
 const FIN_F = 90;
 const frames = (p: any) => Math.round(p.duree * 30);
 export const dureeFonctionnalite = (d: any) => (d.plans ?? []).reduce((s: number, p: any) => s + frames(p), 0) + FIN_F;
+// Plan à pauses : l'enregistrement du simulateur ne garde pas les temps d'arrêt. `segments` = [{ de, a, tenir }] : on lit le clip de `de` à `a` (secondes), puis on fige la dernière image `tenir` secondes (temps de lecture).
+const Segments: React.FC<{ p: any }> = ({ p }) => {
+  let debut = 0;
+  const style = { width: '100%', height: '100%', objectFit: 'cover' as const };
+  const src = staticFile(`fonctionnalites/${p.clip}.mp4`);
+  return (
+    <>
+      {p.segments.map((g: any, i: number) => {
+        const lire = Math.round((g.a - g.de) * 30), tenir = Math.round((g.tenir ?? 0) * 30), from = debut;
+        debut += lire + tenir;
+        return (
+          <React.Fragment key={i}>
+            {lire > 0 && <Sequence from={from} durationInFrames={lire}><OffthreadVideo src={src} muted startFrom={Math.round(g.de * 30)} style={style} /></Sequence>}
+            {tenir > 0 && <Sequence from={from + lire} durationInFrames={tenir}><Freeze frame={0}><OffthreadVideo src={src} muted startFrom={Math.round(g.a * 30)} style={style} /></Freeze></Sequence>}
+          </React.Fragment>
+        );
+      })}
+    </>
+  );
+};
 const PlanLong: React.FC<{ p: any; frames: number }> = ({ p, frames }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
@@ -20,7 +40,7 @@ const PlanLong: React.FC<{ p: any; frames: number }> = ({ p, frames }) => {
         <div style={{ color: C.texte, fontWeight: 900, fontSize: taille(p.texte), lineHeight: 1.03, letterSpacing: -2, textTransform: 'uppercase' }}>{p.texte}</div>
       </Monte>
       <div style={{ position: 'absolute', left: (1080 - LARGEUR) / 2 - 10, top: 430, width: LARGEUR, height: HAUTEUR, borderRadius: 70, overflow: 'hidden', border: '6px solid #2A3040', background: '#000', opacity: e, transform: `translateY(${(1 - e) * 120}px)`, boxShadow: '0 30px 90px rgba(0,0,0,0.6)' }}>
-        <OffthreadVideo src={staticFile(`fonctionnalites/${p.clip}.mp4`)} muted style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        {p.segments ? <Segments p={p} /> : <OffthreadVideo src={staticFile(`fonctionnalites/${p.clip}.mp4`)} muted style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
       </div>
     </AbsoluteFill>
   );

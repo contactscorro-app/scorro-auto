@@ -8,8 +8,11 @@ node_modules/
 rapports/
 publications.log
 resume-du-jour.txt
-public/sons/
+public/sons/*.mp3
 public/grain.png
 public/logos/
 public/joueurs/
+public/sons-fluide/foot/but-cri-*.mp3
+public/sons-fluide/foot/stade-ambiance-*.mp3
 data/*.json.local
+.DS_Store

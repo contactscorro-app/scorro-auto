@@ -4,6 +4,8 @@ import fs from 'node:fs';
 const id = process.argv[2];
 if (!/^[0-9a-f]{20,}$/.test(id ?? '')) throw new Error('identifiant de post Buffer invalide');
 if (process.argv.includes('--simulation')) { console.log(`SIMULATION : supprimerait le post ${id}`); process.exit(0); }
+// Verrou : seul le publieur actif modifie la file Buffer (inactif sur le Mac tant que publieur.verifierSurMac n'est pas à true).
+{ const { controleEnvoi } = await import('./verrou.mjs'); const v = controleEnvoi(); if (!v.ok) { console.log(`VERROU : ${v.raison} ; rien de supprimé`); process.exit(4); } }
 const env = Object.fromEntries((fs.existsSync('.env') ? fs.readFileSync('.env', 'utf8') : '').split('\n').filter((l) => /^[A-Z_]+=/.test(l)).map((l) => { const i = l.indexOf('='); return [l.slice(0, i), l.slice(i + 1).trim()]; }));
 const cle = process.env.BUFFER_API_KEY ?? env.BUFFER_API_KEY;
 if (!cle) throw new Error('BUFFER_API_KEY manquant');

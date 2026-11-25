@@ -12,9 +12,13 @@ jobs:
   passe:
     runs-on: ubuntu-latest
     timeout-minutes: 40
+    permissions:
+      contents: read
+      actions: write # seulement pour l'étape « Relancer » (variable SCORRO_RELANCE = on)
     env:
       SCORRO_CI: '1'
       SCORRO_ENVOIS: ${{ vars.SCORRO_ENVOIS }}
+      SCORRO_ESSAIS: ${{ vars.SCORRO_ESSAIS }}
       SCORRO_PROXY: ${{ secrets.SCORRO_PROXY }}
       BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
       BUFFER_CHANNEL_INSTAGRAM: ${{ secrets.BUFFER_CHANNEL_INSTAGRAM }}
@@ -22,6 +26,7 @@ jobs:
       BUFFER_CHANNEL_TIKTOK: ${{ secrets.BUFFER_CHANNEL_TIKTOK }}
       VIDEOS_REPO: ${{ vars.VIDEOS_REPO }}
       ETAT_REPO: ${{ vars.ETAT_REPO }}
+      MEDIAS_REPO: ${{ vars.MEDIAS_REPO }}
       GH_TOKEN: ${{ secrets.DEPOTS_TOKEN }}
     steps:
       - uses: actions/checkout@v4
@@ -42,6 +47,7 @@ jobs:
           [ -f etat-prive/ERREURS.txt ] && cp etat-prive/ERREURS.txt a-publier/ || true
           [ -d etat-prive/rapports ] && cp -a etat-prive/rapports/. rapports/ || true
           rm -f etat/auto.lock
+          echo "publieur.json : $(cat etat-prive/publieur.json 2>/dev/null || echo 'absent (= mac)') ; SCORRO_ENVOIS=${SCORRO_ENVOIS:-absent} ; SCORRO_ESSAIS=${SCORRO_ESSAIS:-absent}"
       - name: Passe
         run: node scripts/auto.mjs
       - name: Sauvegarder l'état
@@ -56,10 +62,20 @@ jobs:
           cd etat-prive
           git config user.name "scorro-bot"
           git config user.email "295870407+contactscorro-app@users.noreply.github.com"
+          branche=$(git rev-parse --abbrev-ref HEAD)
+          lu=$(git rev-parse HEAD) # commit lu au début de la passe
           git add -A
           if ! git diff --cached --quiet; then
             git commit --amend --no-edit -q || git commit -q -m "état"
-            git push --force -q
+            # Jamais d'écrasement aveugle : si quelqu'un a écrit pendant la passe (ex. publieur.json lors d'une bascule), on repart du distant.
+            if ! git push -q --force-with-lease="$branche:$lu" origin "HEAD:$branche"; then
+              git fetch -q origin "$branche"
+              git reset -q --soft "origin/$branche"
+              # publieur.json appartient à la bascule, jamais à la passe : on garde toujours la version distante.
+              git checkout "origin/$branche" -- publieur.json 2>/dev/null || git rm -q --cached --ignore-unmatch publieur.json
+              git commit -q -m "état" || true
+              git push -q origin "HEAD:$branche"
+            fi
           fi
       - name: Notifications
         if: always()
@@ -70,3 +86,15 @@ jobs:
             texte=$(echo "$ligne" | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>console.log(JSON.parse(s).texte))")
             gh issue create --repo "$ETAT_REPO" --title "$titre" --body "$texte"
           done < out/notifications.jsonl
+      # Q41 = non (pas de compte Cloudflare) : chaque passe relance la suivante, seulement de 10 h à 1 h 30 (Paris), 4 min après la fin.
+      # Désactivé tant que la variable SCORRO_RELANCE n'est pas « on ». Avec le réveil Cloudflare (Q41 = oui), laisser désactivé.
+      - name: Relancer
+        if: always() && vars.SCORRO_RELANCE == 'on'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          h=$(TZ=Europe/Paris date +%H%M)
+          if [ "$h" -ge 1000 ] || [ "$h" -lt 0130 ]; then
+            sleep 240
+            gh workflow run auto.yml --repo "$GITHUB_REPOSITORY" --ref main
+          fi

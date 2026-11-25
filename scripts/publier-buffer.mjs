@@ -11,8 +11,11 @@ const quand = process.argv.find((a) => a.startsWith('--quand='))?.split('=').sli
 const urlDeja = process.argv.find((a) => a.startsWith('--url='))?.split('=').slice(1).join('=');
 const legendeFichier = process.argv.find((a) => a.startsWith('--legende-fichier='))?.split('=').slice(1).join('=');
 const simulation = process.argv.includes('--simulation');
+// Garde-fou : durée PRÉVUE par la composition (secondes), obligatoire hors simulation. Le fichier hébergé doit la respecter à ±1 s, sinon aucun envoi.
+const dureePrevue = Number(process.argv.find((a) => a.startsWith('--duree='))?.split('=')[1]);
+const defautSimule = process.argv.find((a) => a.startsWith('--simulation-defaut='))?.split('=')[1];
 const RESEAUX = (process.argv.find((a) => a.startsWith('--reseaux='))?.split('=')[1] ?? 'instagram,youtube,tiktok').split(',');
-const CANAL = { instagram: 'BUFFER_CHANNEL_INSTAGRAM', youtube: 'BUFFER_CHANNEL_YOUTUBE', tiktok: 'BUFFER_CHANNEL_TIKTOK' };
+const CANAL = { instagram: 'BUFFER_CHANNEL_INSTAGRAM', youtube: 'BUFFER_CHANNEL_YOUTUBE', tiktok: 'BUFFER_CHANNEL_TIKTOK', 'instagram-story': 'BUFFER_CHANNEL_INSTAGRAM' };
 if (!fichier || (!urlDeja && !fs.existsSync(fichier))) throw new Error('vidéo introuvable');
 const txt = legendeFichier ?? fichier.replace(/\.mp4$/, '.txt');
 if (!fs.existsSync(txt)) throw new Error('légende introuvable');
@@ -36,34 +39,71 @@ const META = {
   instagram: { instagram: { type: 'reel', shouldShareToFeed: true } },
   youtube: { youtube: { title: titreYoutube, privacy: 'public', categoryId: '17', madeForKids: false } },
   tiktok: { tiktok: { title: titreYoutube.slice(0, 90) } },
+  // Story Instagram (developers.buffer.com, PostType « story ») : publication automatique seulement sans texte, lien, sticker ni musique.
+  'instagram-story': { instagram: { type: 'story', shouldShareToFeed: false } },
 };
-const TEXTE = { instagram: legende, youtube: legendeYoutube, tiktok: legendeTikTok };
+const TEXTE = { instagram: legende, youtube: legendeYoutube, tiktok: legendeTikTok, 'instagram-story': '' };
 // shareNow : la publication part tout de suite, l'horaire est décidé par auto.mjs.
-// Couverture : si <video>.png existe, Buffer reçoit son URL (thumbnailUrl) et l'image 0 comme instant de repli (thumbnailOffset).
-const entree = (reseau, channelId, url, couv) => ({ text: TEXTE[reseau], channelId, schedulingType: 'automatic', ...(quand && Date.parse(quand) - Date.now() > 3 * 60000 ? { mode: 'customScheduled', dueAt: new Date(Date.parse(quand)).toISOString() } : { mode: 'shareNow' }), metadata: META[reseau], assets: [{ video: { url, ...(couv ? { thumbnailUrl: couv, metadata: { thumbnailOffset: 0 } } : {}) } }] });
+// Couverture (décision du 22/11, schéma Buffer vérifié le 23/11) : l'image 0 EST la vignette. Instagram et TikTok : thumbnailOffset 0 ms.
+// YouTube : Buffer ne permet rien (l'image 0 fait foi). thumbnailUrl n'est JAMAIS envoyé (refusé par l'API).
+const entree = (reseau, channelId, url, couv) => ({ text: TEXTE[reseau], channelId, schedulingType: 'automatic', ...(quand && Date.parse(quand) - Date.now() > 3 * 60000 ? { mode: 'customScheduled', dueAt: new Date(Date.parse(quand)).toISOString() } : { mode: 'shareNow' }), metadata: META[reseau], assets: [{ video: { url, ...(['instagram', 'tiktok'].includes(reseau) ? { metadata: { thumbnailOffset: 0 } } : {}) } }] });
 if (simulation) {
   console.log(JSON.stringify({ mutation: MUTATION, ...Object.fromEntries(RESEAUX.map((r) => [r, entree(r, `<${CANAL[r]}>`, `<url publique>/${nom}`)])) }, null, 1));
   process.exit(0);
+}
+// Verrous anti-doublon (scripts/verrou.mjs) : un seul publieur (publieur.json), SCORRO_ENVOIS, puis file Buffer. Sur le Mac : inactifs tant que publieur.verifierSurMac n'est pas à true.
+const { controleEnvoi, verrouApplique, dejaDansBuffer } = await import('./verrou.mjs');
+{
+  const v = controleEnvoi();
+  if (!v.ok) { console.log(`VERROU : ${v.raison} ; rien d'envoyé`); process.exit(4); }
 }
 const env = Object.fromEntries((fs.existsSync('.env') ? fs.readFileSync('.env', 'utf8') : '').split('\n').filter((l) => /^[A-Z_]+=/.test(l)).map((l) => { const i = l.indexOf('='); return [l.slice(0, i), l.slice(i + 1).trim()]; }));
 const V = (k) => { const v = process.env[k] ?? env[k]; if (!v) throw new Error(`${k} manquant dans .env`); return v; };
 // Buffer veut une URL publique directe : la vidéo validée, et elle seule, part sur la publication « videos » du dépôt public.
 const depot = V('VIDEOS_REPO');
+// Âge de la vidéo en ligne (dernière mise à jour de l'asset sur la publication « videos »). null si absente.
+const assetHeberge = () => {
+  const r = spawnSync('gh', ['api', `repos/${depot}/releases/tags/videos`, '--jq', `.assets[]|select(.name==${JSON.stringify(path.basename(fichier))})|[.size,.updated_at,.state]|@tsv`], { encoding: 'utf8' });
+  const [taille, maj, etat] = (r.stdout ?? '').trim().split('\t');
+  return r.status === 0 && maj ? { taille: Number(taille), maj: Date.parse(maj), etat } : null;
+};
 if (!urlDeja) {
-  const up = spawnSync('gh', ['release', 'upload', 'videos', fichier, '--repo', depot, '--clobber'], { encoding: 'utf8' });
-  if (up.status !== 0) throw new Error(`envoi de la vidéo : ${(up.stderr ?? '').slice(0, 200)}`);
+  // Pas de nouvel envoi si la même vidéo (même taille) est déjà en ligne : le délai de 5 min ne doit pas repartir de zéro à chaque passe.
+  const deja = fs.existsSync(fichier) ? assetHeberge() : null;
+  if (!(deja && deja.etat === 'uploaded' && deja.taille === fs.statSync(fichier).size)) {
+    const up = spawnSync('gh', ['release', 'upload', 'videos', fichier, '--repo', depot, '--clobber'], { encoding: 'utf8' });
+    if (up.status !== 0) throw new Error(`envoi de la vidéo : ${(up.stderr ?? '').slice(0, 200)}`);
+  }
+}
+// GARDE-FOU (délai) : au moins 5 min entre la mise en ligne et la programmation dans Buffer (cache GitHub : ancienne version ou rien pendant quelques minutes).
+if (!simulation) {
+  const DELAI = Number(process.env.SCORRO_TEST_DELAI_MS ?? 5 * 60000), h = assetHeberge(); // SCORRO_TEST_DELAI_MS : uniquement pour tester ce garde-fou
+  if (!h || h.etat !== 'uploaded') throw new Error('GARDE-FOU : vidéo absente de la publication « videos » ou pas encore terminée');
+  const age = Date.now() - h.maj;
+  if (age < DELAI) { console.log(`ATTENTE-HEBERGEMENT : en ligne depuis ${Math.round(age / 1000)} s, minimum 300 s avant Buffer`); process.exit(3); }
 }
 const url = urlDeja ?? `https://github.com/${depot}/releases/download/videos/${encodeURIComponent(nom)}`;
-// Couverture : image <video>.png si elle existe (data/auto-config.json : couvertures:true), envoyée à Buffer comme thumbnailUrl.
-let couv = null;
-const png = fichier.replace(/\.mp4$/, '.png');
-if (!urlDeja && fs.existsSync(png)) {
-  const upc = spawnSync('gh', ['release', 'upload', 'videos', png, '--repo', depot, '--clobber'], { encoding: 'utf8' });
-  if (upc.status === 0) couv = `https://github.com/${depot}/releases/download/videos/${encodeURIComponent(path.basename(png))}`;
+// GARDE-FOU (avant tout envoi à Buffer) : fichier hébergé complet, lisible, de la durée prévue (±1 s). Sinon : rien n'est envoyé.
+{
+  const { controlerHebergement } = await import('./controle-video.mjs');
+  const tailleEnvoyee = !urlDeja && fs.existsSync(fichier) ? fs.statSync(fichier).size : undefined;
+  const pbs = await controlerHebergement({ url, dureePrevue, taille: tailleEnvoyee, defaut: defautSimule });
+  if (pbs.length) { console.log(`GARDE-FOU : ${pbs.join(' ; ')}`); throw new Error(`GARDE-FOU : ${pbs.join(' ; ')}`); }
+  console.log('GARDE-FOU : OK (hébergé complet, lisible, durée conforme)');
 }
+// Test du garde-fou seul (avec --url) : on s'arrête ici, rien n'est envoyé à Buffer.
+if (process.argv.includes('--controle-seul')) process.exit(0);
+const couv = null; // plus d'image de couverture envoyée (voir plus haut)
 for (const reseau of RESEAUX) {
   const cle = CANAL[reseau];
-  if (faites[nom]?.[reseau]) continue;
+  if (faites[nom]?.[reseau]) { console.log(`DEJA ${reseau} ${faites[nom][reseau]} : ${nom} est déjà dans ${REG}, rien d'envoyé`); continue; }
+  if (verrouApplique()) {
+    // Verrou 3 : la vidéo est-elle déjà programmée ou envoyée sur ce canal (par l'autre côté) ? Lecture impossible = aucun envoi.
+    let idBuffer;
+    try { idBuffer = await dejaDansBuffer({ q: async (query, variables) => (await (await fetch('https://api.buffer.com', { method: 'POST', headers: { Authorization: `Bearer ${V('BUFFER_API_KEY')}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ query, variables }) })).json()), canal: V(cle), nom }); }
+    catch (e) { console.log(`VERROU : ${e.message} ; rien d'envoyé`); process.exit(4); }
+    if (idBuffer) { faites[nom] = { ...faites[nom], [reseau]: idBuffer }; fs.mkdirSync('etat', { recursive: true }); fs.writeFileSync(REG, JSON.stringify(faites, null, 1)); console.log(`DEJA ${reseau} ${idBuffer} : ${nom} est déjà dans la file Buffer, rien d'envoyé`); continue; }
+  }
   const r = await fetch('https://api.buffer.com', { method: 'POST', headers: { Authorization: `Bearer ${V('BUFFER_API_KEY')}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ query: MUTATION, variables: { input: entree(reseau, V(cle), url, couv) } }) });
   const j = await r.json().catch(() => ({}));
   const id = j?.data?.createPost?.post?.id;

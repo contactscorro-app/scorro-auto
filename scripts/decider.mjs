@@ -164,7 +164,8 @@ export function taches(matchs, cfg, maintenant, ctx = {}) {
   const fini = (m) => FINS.has(m.etat);
   const conf = { ...cfg, clubsPrioritaires: cfg.clubsPrioritaires ?? cfg.clubsLigue1 };
   const gros = (m) => estGros(m, conf);
-  const plan = planifier(matchs, cfg, ctx.engages ?? new Set());
+  // Rythme : l'ancien plafond (12-16 par jour) ne doit plus écarter un récap ; c'est filtrerRythme et le plafond du rythme qui limitent.
+  const plan = planifier(matchs, rythmeActif(cfg, maintenant) ? { ...cfg, maxParJour: 99, maxParJourWeekend: 99 } : cfg, ctx.engages ?? new Set());
   const vuFini = (m) => vusFinis[m.id] ?? maintenant;
   const rangC1 = (m) => Math.min(...[m.dom, m.ext].map((c) => { const i = (cfg.clubsC1 ?? []).indexOf(c); return i < 0 ? 999 : i; }));
   const grosC1Soir = new Map();
@@ -178,20 +179,20 @@ export function taches(matchs, cfg, maintenant, ctx = {}) {
       const de = m.debut - (g ? 5 : 2) * HEURE;
       if (maintenant >= de - (cfg.avanceH ?? 0) * HEURE && maintenant < m.debut - 10 * MIN) {
         const rang = grosC1Soir.get(jourParis(m.debut))?.indexOf(m) ?? -1;
-        t.push({ cle: `avant-match-${m.id}`, format: 'avant-match', id: m.id, prono: rang > 0, gros: g, poids, de, jusqu: m.debut - 10 * MIN, paire: `match-${m.id}` });
+        t.push({ cle: `avant-match-${m.id}`, format: 'avant-match', id: m.id, ligue: m.ligue, prono: rang > 0, gros: g, poids, de, jusqu: m.debut - 10 * MIN, paire: `match-${m.id}` });
       }
     }
     if (fini(m)) {
       const f = vuFini(m), de = g ? f : f + 10 * MIN;
       // Pas d'après sans son avant (sauf match ajouté en cours de journée, où l'avant n'a jamais été dû).
-      if (maintenant >= de && avantOk(`avant-match-${m.id}`)) t.push({ cle: `apres-match-${m.id}`, format: 'apres-match', id: m.id, gros: g, poids, de, jusqu: f + 6 * HEURE, paire: `match-${m.id}` });
+      if (maintenant >= de && avantOk(`avant-match-${m.id}`)) t.push({ cle: `apres-match-${m.id}`, format: 'apres-match', id: m.id, ligue: m.ligue, debut: m.debut, score: plan.pm.find((x) => x.m.id === m.id)?.score ?? 0, gros: g, poids, de, jusqu: f + 6 * HEURE, paire: `match-${m.id}` });
     }
   }
   // Journées et soirées : avant-journée / avant-soirée, puis récap.
   for (const p of plan.liste.filter((p) => p.type !== 'match' && plan.pairesRetenues.has(p.cle))) {
     const ms = matchs.filter((m) => m.round === p.round && (p.jour ? jourParis(m.debut) === p.jour : true));
     const suffixe = p.jour ? `-${p.jour}` : '';
-    const base = { id: p.round, jour: p.jour ?? undefined, paire: p.cle, gros: false, poids: poidsDe.journee };
+    const base = { id: p.round, jour: p.jour ?? undefined, ligue: p.ligue, paire: p.cle, gros: false, poids: poidsDe.journee };
     const aVenir = ms.filter((m) => m.etat === 'NS');
     if (p.grand) {
       // Grand championnat : avant-journée sur les matchs qui restent (au moins 2 si la journée a commencé), jusqu'à 1 h avant le prochain coup d'envoi.
@@ -219,10 +220,133 @@ export function taches(matchs, cfg, maintenant, ctx = {}) {
     const de = parisA(e.jour, e.heure ?? 17);
     if (maintenant >= de && maintenant < de + 6 * HEURE) t.push({ cle: `classement-equipes-${e.id}-treve`, format: 'classement-equipes', id: e.id, gros: false, poids: poidsDe.classement, de, jusqu: de + 6 * HEURE });
   }
-  return t;
+  return [...(rythmeActif(cfg, maintenant) ? filtrerRythme(t, matchs, cfg, maintenant) : t), ...tachesFormats(cfg, maintenant)];
+}
+// Formats du planning (cfg.formats.calendrier) : rendus la nuit qui précède le jour de publication (22 h - 7 h), puis déposés (depot : pas d'envoi automatique).
+export function tachesFormats(cfg, maintenant) {
+  const F = cfg.formats;
+  if (!F?.actif) return [];
+  const [n0, n1] = F.nuit ?? [22, 7];
+  return (F.calendrier ?? []).filter((e) => !e.manuel).map((e) => ({ cle: `format-${e.format}-${e.date}`, format: `f-${e.format}`, id: e.ligue ?? 0, datePub: e.date, creneau: e.creneau, depot: !F.envoi, ...(e.sansYoutube ? { reseaux: ['instagram', 'tiktok'] } : {}), gros: false, poids: 0.8, de: parisA(jourPlus(e.date, -1), n0), jusqu: parisA(e.date, n1) }))
+    .filter((x) => maintenant >= x.de && maintenant < x.jusqu)
+    .concat(tachesFonc(cfg, maintenant));
+}
+// Fonctionnalités : rendu de jour, dans les « joursAvant » jours qui précèdent le créneau, jusqu'à 1 h avant ; puis programmées dans Buffer.
+export function tachesFonc(cfg, maintenant) {
+  const F = cfg.fonctionnalites;
+  if (!F?.actif) return [];
+  const j0 = jourParis(maintenant), n = F.rendu?.joursAvant ?? 4;
+  return creneauxFonc(cfg, j0, jourPlus(j0, n)).filter((e) => e.fonc).map((e) => {
+    const h0 = Number((cfg.rythme?.[e.creneau] ?? (e.creneau === 'matin' ? ['12:00'] : ['19:00']))[0].split(':')[0]);
+    return { cle: `format-fonc-${e.fonc}`, format: 'f-fonc', id: 0, fid: e.fonc, datePub: e.date, creneau: e.creneau, rendeJour: true, gros: false, poids: 0.8, de: parisA(jourPlus(e.date, -n), F.rendu?.heures?.[0] ?? 14), jusqu: parisA(e.date, h0) - HEURE };
+  }).filter((x) => maintenant >= x.de && maintenant < x.jusqu);
+}
+// Série « Fonctionnalités de l'app » : un créneau par jour listé (jeudi soir, samedi matin) à partir de « debut » ; le k-ième créneau prend la k-ième vidéo de « ordre ».
+export function creneauxFonc(cfg, jourDe, jourA) {
+  const F = cfg.fonctionnalites;
+  if (!F?.actif) return [];
+  const ordre = cfg.ordreFonctionnalites ?? [];
+  const out = []; let k = 0;
+  for (let j = F.debut; j <= jourA && k < 400; j = jourPlus(j, 1)) {
+    const c = (F.creneaux ?? []).find((x) => x.jourSemaine === jourSemaine(j));
+    if (!c) continue;
+    if (j >= jourDe) out.push({ date: j, creneau: c.creneau, format: 'fonc', fonc: ordre[k] ?? null, k });
+    k++;
+  }
+  return out;
+}
+// Créneaux réservés par le planning des formats et par la série des fonctionnalités : le contenu automatique ne les prend pas, et ils comptent dans le plafond du jour.
+const reservesDu = (cfg, jour) => [...(cfg.formats?.actif || cfg.formats?.reserver ? cfg.formats.calendrier ?? [] : []), ...creneauxFonc(cfg, jour, jour).filter((e) => e.fonc)].filter((e) => e.date === jour);
+
+// ───────── Rythme (décision de l'éditeur du 22/11, rapports/planning-propose-2026-11-17.md) ─────────
+// 1 vidéo par jour et par réseau, 2 les jours de match (Ligue 1 ou Ligue des champions) : une dans le créneau du matin, une dans celui du soir.
+// Gardé en vidéo : récap de la journée de Ligue 1, récap de soirée de Ligue des champions, avant-journée de Ligue 1, top buteurs Ligue 1 du lundi,
+// classement équipes du mercredi (sans coupe d'Europe ce jour-là), après-match d'un choc (score ≥ SEUIL_GROS) un jour sans récap.
+// Tout le reste (avant-match, après-match ordinaires, autres récaps, joueurs de la journée) ne sort plus en vidéo (stories, à faire).
+export const rythmeActif = (cfg, ms) => !!cfg?.rythme?.actif && ms >= Date.parse(cfg.rythme.depuis ?? '1970-01-01T00:00:00Z');
+const minutes = (hhmm) => { const [h, m] = hhmm.split(':').map(Number); return h * 60 + m; };
+// Jour et créneau « éditoriaux » d'un instant : entre 0 h et 8 h, c'est encore le soir de la veille (après-match tardif d'un choc).
+export const jourRythme = (ms) => (heureParis(ms) < 8 ? jourParis(ms - 8 * HEURE) : jourParis(ms));
+export function creneauRythme(cfg, ms) {
+  if (heureParis(ms) < 8) return 'soir';
+  const x = minutes(hhmmParis(ms));
+  for (const nom of ['matin', 'soir']) { const [a, b] = cfg.rythme[nom]; if (x >= minutes(a) && x < minutes(b)) return nom; }
+  return null;
+}
+export const joursDeMatch = (matchs, cfg) => [...new Set(matchs.filter((m) => (cfg.rythme?.liguesJourDeMatch ?? [301, 2]).includes(m.ligue) && !REPORTES.has(m.etat)).map((m) => jourParis(m.debut)))].sort();
+// Jour de match, ou jour d'une vidéo « fonctionnalité » (jeudi compté comme jour à 2 vidéos, décision du 23/11) : 2 ; sinon 1.
+export const capRythme = (cfg, jour) => ((cfg.rythme.joursMatch ?? []).includes(jour) || creneauxFonc(cfg, jour, jour).some((e) => e.fonc) ? cfg.rythme.maxJourMatch ?? 2 : cfg.rythme.maxJour ?? 1);
+function permisRythme(tache, reseau, pubs, maintenant, cfg) {
+  // Jusqu'à 1 h du matin, seulement pour l'actu chaude : après-match d'un choc et récap de la journée de Ligue 1 (dernier match à 20 h 45 le dimanche).
+  const exception = ((tache.format === 'apres-match' && tache.gros) || (tache.format === 'apres-journee' && tache.ligue === 301 && !tache.jour)) && heureParis(maintenant) < 1;
+  if (heureParis(maintenant) < 8 && !exception) return { ok: false, raison: 'nuit' };
+  const c = creneauRythme(cfg, maintenant);
+  if (!c) return { ok: false, raison: 'hors créneau' };
+  const j = jourRythme(maintenant), depuis = Date.parse(cfg.rythme.depuis);
+  const du = pubs.filter((p) => p.reseau === reseau && !p.echec && p.t >= depuis && jourRythme(p.t) === j);
+  // Un format ne se bloque pas sur sa propre réservation, et une réservation déjà programmée (présente dans pubs) ne compte pas deux fois.
+  const dejaLa = (e) => pubs.some((p) => p.reseau === reseau && (p.cle === `format-${e.format}-${e.date}` || (e.fonc && p.cle === `format-fonc-${e.fonc}`)));
+  const res = reservesDu(cfg, j).filter((e) => tache.format !== `f-${e.format}` && !dejaLa(e));
+  if (du.length + res.length >= capRythme(cfg, j)) return { ok: false, raison: 'plafond' };
+  if (du.some((p) => creneauRythme(cfg, p.t) === c) || res.some((e) => e.creneau === c)) return { ok: false, raison: 'créneau pris' };
+  return { ok: true };
+}
+function filtrerRythme(t, matchs, cfg, maintenant) {
+  const r = cfg.rythme;
+  const sansYt = (x) => ((r.sansYoutube ?? []).includes(x.format) ? { ...x, reseaux: ['instagram', 'tiktok'] } : x);
+  // Jours où un récap tombe le soir (dernier match d'une journée de Ligue 1, soirée de Ligue des champions) : pas d'après-match de choc ces jours-là.
+  const recap = new Set();
+  const rondes = new Map();
+  for (const m of matchs) if (m.ligue === 301 && m.round && !REPORTES.has(m.etat)) rondes.set(m.round, Math.max(rondes.get(m.round) ?? 0, m.debut));
+  for (const L of rondes.values()) recap.add(jourParis(L));
+  for (const m of matchs) if (m.ligue === 2) recap.add(jourParis(m.debut));
+  // Stories (cfg.stories.actif) : les avant-match et après-match qui ne sortent plus en vidéo deviennent des stories (7 s), au moment où la vidéo serait partie.
+  const st = cfg.stories?.actif ? cfg.stories : null;
+  // Stories seulement pour la Ligue 1, les coupes d'Europe et les chocs (chaque story est un rendu : le Mac chauffe).
+  const vaut = (x) => x.ligue === 301 || coupesDe(cfg).includes(x.ligue) || x.gros;
+  const stories = !st ? [] : t.filter(vaut).filter((x) => (x.format === 'avant-match' && maintenant >= x.de) || (x.format === 'apres-match' && !(x.gros && x.score >= SEUIL_GROS && !recap.has(jourParis(x.debut)))))
+    .map((x) => ({ cle: `story-${x.format === 'avant-match' ? 'avant' : 'apres'}-${x.id}`, format: x.format === 'avant-match' ? 'story-avant' : 'story-apres', id: x.id, story: true, gros: false, poids: 0.5, de: x.de, jusqu: x.format === 'avant-match' ? x.jusqu : x.de + 3 * HEURE, reseaux: st.reseaux ?? ['instagram-story'] }));
+  const garde = t.filter((x) => {
+    if (x.format === 'avant-journee') return x.ligue === 301 && !x.jour;
+    if (x.format === 'apres-journee') return (x.ligue === 301 && !x.jour) || (x.ligue === 2 && !!x.jour);
+    if (x.format === 'classement' || x.format === 'classement-equipes') return true;
+    if (x.format === 'apres-match') return x.gros && x.score >= SEUIL_GROS && !recap.has(jourParis(x.debut));
+    return false;
+  });
+  // Classement équipes du mercredi soir, un grand championnat par semaine en rotation, si aucun match de coupe d'Europe ce jour-là.
+  const ce = r.classementEquipes;
+  if (ce) {
+    const j = jourParis(maintenant);
+    const coupe = matchs.some((m) => coupesDe(cfg).includes(m.ligue) && jourParis(m.debut) === j);
+    if (jourSemaine(j) === (ce.jourSemaine ?? 3) && !coupe) {
+      const sem = semaine(maintenant), n = Math.round((Date.parse(`${sem}T12:00:00Z`) - Date.parse(`${semaine(Date.parse(r.depuis))}T12:00:00Z`)) / (7 * 24 * HEURE));
+      const id = ce.rotation[((n % ce.rotation.length) + ce.rotation.length) % ce.rotation.length];
+      const de = parisA(j, ce.heure ?? 19);
+      if (maintenant >= de && maintenant < de + 4 * HEURE) garde.push({ cle: `classement-equipes-${id}-${sem}`, format: 'classement-equipes', id, gros: false, poids: poidsDe.classement, de, jusqu: de + 4 * HEURE });
+    }
+  }
+  // Récap de soirée de Ligue des champions : s'il ne part pas le soir même, il part le lendemain dans le créneau du matin (jusqu'à sa fin).
+  const finMatin = (x) => parisA(jourPlus(jourRythme(x.de), 1), Number(r.matin[1].split(':')[0]));
+  return [...stories, ...garde].map((x) => (x.format === 'apres-journee' && x.ligue === 2 ? { ...x, jusqu: Math.max(x.jusqu, finMatin(x)) } : x)).map(sansYt);
 }
 // Garde-fous : rien entre 0 h et 8 h (sauf après-match d'un gros match, jusqu'à 1 h), 30 min d'écart, 12 par jour et par réseau.
+// YouTube (constaté du 17 au 22/11 dans Buffer) : la chaîne n'accepte que 2 envois par 24 h glissantes (« The daily posting limit for this channel has been reached »).
+// Un nouvel envoi à l'instant t est refusé si, avec lui, 3 envois tiennent dans moins de 24 h (+ 15 min de marge). Les envois refusés par Buffer (echec) ne comptent pas.
+export function youtubeLibre(pubs, t, cfg = {}) {
+  const max = cfg.youtubeMax24h ?? 2, fen = 24 * HEURE + 15 * MIN;
+  const ts = [...pubs.filter((p) => p.reseau === 'youtube' && !p.echec && Math.abs(p.t - t) < fen).map((p) => p.t), t].sort((a, b) => a - b);
+  for (let i = 0; i + max < ts.length; i++) if (ts[i + max] - ts[i] < fen) return false;
+  return true;
+}
 export function permis(tache, reseau, pubs, maintenant, cfg = {}) {
+  // Stories : ni créneau ni plafond des vidéos ; seulement pas la nuit et au plus stories.maxJour par jour.
+  if (tache.story) {
+    if (heureParis(maintenant) < 8) return { ok: false, raison: 'nuit' };
+    const n = pubs.filter((p) => p.reseau === reseau && p.story && jourParis(p.t) === jourParis(maintenant)).length;
+    return n >= (cfg.stories?.maxJour ?? 8) ? { ok: false, raison: 'plafond' } : { ok: true };
+  }
+  if (reseau === 'youtube' && !youtubeLibre(pubs, maintenant, cfg)) return { ok: false, raison: 'youtube 24 h' };
+  if (rythmeActif(cfg, maintenant)) return permisRythme(tache, reseau, pubs, maintenant, cfg);
   const h = heureParis(maintenant);
   const nuit = h < 8;
   const exception = tache.format === 'apres-match' && tache.gros && h < 1;

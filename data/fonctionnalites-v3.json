@@ -1,0 +1,407 @@
+{
+ "_note": "Série « Fonctionnalités de l'app » (décision de l'éditeur du 23/11). Une fonctionnalité par vidéo, 10-20 s, vraies captures de la version App Store (v1.1.0 build 15, copie isolée, ligue fictive), rien de la 1.2. Ordre : scores en direct, notification de but, pronos entre potes, classements et stats, Fan Zone et commentaires, fiche match. Envoi automatique via Buffer seulement après le OK de l'éditeur sur la 1re vidéo. | 23/11 20:45 : validée par l'éditeur (Q23 a). Créneaux : jeudi 19 h et samedi 12 h (Q24 a), à partir du 26/11 ; chaque créneau prend la vidéo suivante de « ordre », jamais une déjà montrée. Captures : v1.1.0 build 15 (copie isolée, ligue et pseudos fictifs). La notification de but est composée avec le texte de l'app et un vrai but relevé par le proxy (Liverpool–Man United, 22/11), comme dans la présentation validée.",
+ "videos": [
+  {
+   "id": "scores-direct",
+   "titre": "SCORES\nEN DIRECT",
+   "accroche": [
+    "TU RATES",
+    "ENCORE",
+    "LES BUTS ?"
+   ],
+   "motCle": "BUTS",
+   "vignette": "fonctionnalites-v3/accueil-direct.png",
+   "legende": "Tu rates encore les buts ? Sur Scorro, les scores de la Ligue 1, de la Premier League, de la Liga… en direct, à la seconde. Scorro, gratuit sur l'App Store.",
+   "plans": [
+    {
+     "src": "fonctionnalites-v3/direct.mp4",
+     "video": true,
+     "lignes": [
+      "LES SCORES EN DIRECT",
+      "À LA SECONDE"
+     ],
+     "cle": "SECONDE",
+     "duree": 132,
+     "ry": 12
+    },
+    {
+     "src": "fonctionnalites-v3/accueil.mp4",
+     "video": true,
+     "lignes": [
+      "TOUS TES",
+      "CHAMPIONNATS"
+     ],
+     "cle": "CHAMPIONNATS",
+     "duree": 100,
+     "ry": -12
+    }
+   ]
+  },
+  {
+   "id": "notification-but",
+   "titre": "ALERTE\nBUT",
+   "accroche": [
+    "UN BUT,",
+    "TU LE SAIS",
+    "TOUT DE SUITE"
+   ],
+   "motCle": "SUITE",
+   "vignette": "fonctionnalites-v3/evenements.png",
+   "legende": "Un but ? Tu le sais tout de suite : Scorro te prévient en direct, et tous les événements du match sont là, minute par minute. Scorro, gratuit sur l'App Store.",
+   "plans": [
+    {
+     "src": "fonctionnalites-v3/evenements.png",
+     "lignes": [
+      "UNE ALERTE",
+      "À CHAQUE BUT"
+     ],
+     "cle": "BUT",
+     "duree": 130,
+     "ry": 12,
+     "notif": {
+      "titre": "⚽ But de Liverpool !",
+      "corps": "Florian Wirtz 13' · Liverpool 2-0 Manchester United",
+      "a": 34
+     }
+    },
+    {
+     "src": "fonctionnalites-v3/evenements.png",
+     "lignes": [
+      "TOUT LE MATCH,",
+      "MINUTE PAR MINUTE"
+     ],
+     "cle": "MATCH,",
+     "duree": 100,
+     "ry": -12
+    }
+   ]
+  },
+  {
+   "id": "pronos-potes",
+   "titre": "PRONOS\nENTRE POTES",
+   "accroche": [
+    "T'AS DIT",
+    "3-1 ?",
+    "PROUVE-LE"
+   ],
+   "motCle": "PROUVE-LE",
+   "vignette": "fonctionnalites-v3/pronos.png",
+   "legende": "T'as dit 3-1 ? Prouve-le. Sur Scorro, tu fais tes pronos avant chaque match et tu défies tes potes dans ta propre ligue. Scorro, gratuit sur l'App Store.",
+   "plans": [
+    {
+     "src": "fonctionnalites-v3/pronos.png",
+     "lignes": [
+      "TON PRONO",
+      "AVANT CHAQUE MATCH"
+     ],
+     "cle": "PRONO",
+     "duree": 120,
+     "ry": 12
+    },
+    {
+     "src": "fonctionnalites-v3/ligue.png",
+     "lignes": [
+      "DÉFIE TES POTES",
+      "DANS TA LIGUE"
+     ],
+     "cle": "POTES",
+     "duree": 110,
+     "ry": -12
+    }
+   ]
+  },
+  {
+   "id": "classements-stats",
+   "titre": "CLASSEMENTS\nET STATS",
+   "accroche": [
+    "QUI EST",
+    "VRAIMENT",
+    "EN TÊTE ?"
+   ],
+   "motCle": "TÊTE",
+   "vignette": "fonctionnalites-v3/classement.png",
+   "legende": "Qui est vraiment en tête ? Classements, buteurs, passeurs : sur Scorro, tout est à jour après chaque match. Scorro, gratuit sur l'App Store.",
+   "plans": [
+    {
+     "src": "fonctionnalites-v3/classement.png",
+     "lignes": [
+      "CLASSEMENT,",
+      "BUTEURS, PASSEURS"
+     ],
+     "cle": "BUTEURS,",
+     "duree": 130,
+     "ry": 12
+    },
+    {
+     "src": "fonctionnalites-v3/club-infos-2.png",
+     "lignes": [
+      "LES STATS",
+      "DE TON CLUB"
+     ],
+     "cle": "CLUB",
+     "duree": 100,
+     "ry": -12
+    }
+   ]
+  },
+  {
+   "id": "fan-zone",
+   "titre": "FAN\nZONE",
+   "accroche": [
+    "CE MATCH",
+    "TE FAIT",
+    "PARLER ?"
+   ],
+   "motCle": "PARLER",
+   "vignette": "fonctionnalites-v3/commentaires.png",
+   "legende": "Ce match te fait parler ? Dans la Fan Zone de Scorro, tu commentes le match en direct avec les autres fans. Scorro, gratuit sur l'App Store.",
+   "plans": [
+    {
+     "src": "fonctionnalites-v3/commentaires.png",
+     "lignes": [
+      "COMMENTE LE MATCH",
+      "AVEC LES FANS"
+     ],
+     "cle": "FANS",
+     "duree": 140,
+     "ry": 12
+    }
+   ]
+  },
+  {
+   "id": "fiche-match",
+   "titre": "FICHE\nMATCH",
+   "accroche": [
+    "QUI JOUE",
+    "CE SOIR ?"
+   ],
+   "motCle": "JOUE",
+   "vignette": "fonctionnalites-v3/compo.png",
+   "legende": "Qui joue ce soir ? Compos, événements, stats : chaque match a sa fiche complète sur Scorro. Scorro, gratuit sur l'App Store.",
+   "plans": [
+    {
+     "src": "fonctionnalites-v3/compo.png",
+     "lignes": [
+      "LES COMPOS",
+      "SUR LE TERRAIN"
+     ],
+     "cle": "COMPOS",
+     "duree": 120,
+     "ry": 12
+    },
+    {
+     "src": "fonctionnalites-v3/evenements.png",
+     "lignes": [
+      "BUTS, CARTONS,",
+      "CHANGEMENTS"
+     ],
+     "cle": "CARTONS,",
+     "duree": 100,
+     "ry": -12
+    }
+   ],
+   "mix": {
+    "nappe": 0.1,
+    "gain": 0.75
+   }
+  },
+  {
+   "id": "fiche-joueur",
+   "titre": "FICHE\nJOUEUR",
+   "accroche": [
+    "TOUT SUR",
+    "TES",
+    "JOUEURS"
+   ],
+   "motCle": "JOUEURS",
+   "vignette": "fonctionnalites-v3/joueur.png",
+   "legende": "Tout sur tes joueurs : poste, âge, nationalité et stats de la saison, sur Scorro. Scorro, gratuit sur l'App Store.",
+   "plans": [
+    {
+     "src": "fonctionnalites-v3/joueur.png",
+     "lignes": [
+      "SA FICHE",
+      "ET SES STATS"
+     ],
+     "cle": "STATS",
+     "duree": 140,
+     "ry": 12
+    }
+   ]
+  },
+  {
+   "id": "recherche-surnom",
+   "titre": "CHERCHE\nTON CLUB",
+   "accroche": [
+    "TAPE",
+    "« PSG »,",
+    "C'EST TROUVÉ"
+   ],
+   "motCle": "TROUVÉ",
+   "vignette": "fonctionnalites-v3/recherche.png",
+   "legende": "Tape « PSG », c'est trouvé : sur Scorro, tu cherches un club par son surnom. Scorro, gratuit sur l'App Store.",
+   "plans": [
+    {
+     "src": "fonctionnalites-v3/recherche.png",
+     "lignes": [
+      "CHERCHE UN CLUB",
+      "PAR SON SURNOM"
+     ],
+     "cle": "SURNOM",
+     "duree": 130,
+     "ry": 12,
+     "cam": {
+      "s": 1.6,
+      "fy": 0.22
+     }
+    }
+   ]
+  },
+  {
+   "id": "club-favori",
+   "titre": "TON CLUB\nFAVORI",
+   "accroche": [
+    "TON CLUB,",
+    "TOUJOURS",
+    "SOUS LA MAIN"
+   ],
+   "motCle": "MAIN",
+   "vignette": "fonctionnalites-v3/club.png",
+   "legende": "Ton club, toujours sous la main : choisis ton équipe et retrouve ses matchs, ses classements et son actu sur Scorro. Scorro, gratuit sur l'App Store.",
+   "plans": [
+    {
+     "src": "fonctionnalites-v3/accueil-direct.png",
+     "lignes": [
+      "CHOISIS",
+      "TON ÉQUIPE"
+     ],
+     "cle": "ÉQUIPE",
+     "duree": 100,
+     "ry": 12
+    },
+    {
+     "src": "fonctionnalites-v3/club.png",
+     "lignes": [
+      "SES MATCHS,",
+      "SES CLASSEMENTS"
+     ],
+     "cle": "CLASSEMENTS",
+     "duree": 120,
+     "ry": -12
+    }
+   ]
+  },
+  {
+   "id": "palmares",
+   "titre": "LE\nPALMARÈS",
+   "accroche": [
+    "COMBIEN",
+    "DE TITRES ?"
+   ],
+   "motCle": "TITRES",
+   "vignette": "fonctionnalites-v3/club-infos-2.png",
+   "legende": "Combien de titres ? Sur Scorro, le palmarès de ton club, avec les années de chaque titre. Scorro, gratuit sur l'App Store.",
+   "plans": [
+    {
+     "src": "fonctionnalites-v3/club-infos-2.png",
+     "lignes": [
+      "LE PALMARÈS,",
+      "ANNÉE PAR ANNÉE"
+     ],
+     "cle": "PALMARÈS,",
+     "duree": 150,
+     "ry": 12,
+     "cam": {
+      "s": 1.3,
+      "fy": 0.86
+     }
+    }
+   ]
+  },
+  {
+   "id": "comparateur",
+   "titre": "LE\nCOMPARATEUR",
+   "accroche": [
+    "QUI EST",
+    "LE MEILLEUR ?"
+   ],
+   "motCle": "MEILLEUR",
+   "vignette": "fonctionnalites-v3/comparateur-sombre.png",
+   "legende": "Qui est le meilleur ? Compare deux équipes ou deux joueurs, statistique par statistique, sur Scorro. Scorro, gratuit sur l'App Store.",
+   "plans": [
+    {
+     "src": "fonctionnalites-v3/comparer-equipes.mp4",
+     "video": true,
+     "depuis": 12.5,
+     "lignes": [
+      "ÉQUIPE",
+      "CONTRE ÉQUIPE"
+     ],
+     "cle": "CONTRE",
+     "duree": 120,
+     "ry": 12
+    },
+    {
+     "src": "fonctionnalites-v3/comparer-joueurs.mp4",
+     "video": true,
+     "depuis": 10.8,
+     "lignes": [
+      "JOUEUR",
+      "CONTRE JOUEUR"
+     ],
+     "cle": "CONTRE",
+     "duree": 60,
+     "ry": -12
+    }
+   ]
+  },
+  {
+   "id": "mode-sombre",
+   "titre": "CLAIR OU\nSOMBRE",
+   "accroche": [
+    "CLAIR",
+    "OU SOMBRE ?"
+   ],
+   "motCle": "SOMBRE",
+   "vignette": "fonctionnalites-v3/comparateur-sombre.png",
+   "legende": "Clair ou sombre ? Dans les réglages de Scorro, choisis l'apparence de l'app. Scorro, gratuit sur l'App Store.",
+   "plans": [
+    {
+     "src": "fonctionnalites-v3/classement.png",
+     "lignes": [
+      "EN CLAIR…"
+     ],
+     "cle": "CLAIR…",
+     "duree": 80,
+     "ry": 12
+    },
+    {
+     "src": "fonctionnalites-v3/comparer-equipes.mp4",
+     "video": true,
+     "depuis": 12.5,
+     "lignes": [
+      "…OU EN SOMBRE,",
+      "À TOI DE CHOISIR"
+     ],
+     "cle": "CHOISIR",
+     "duree": 110,
+     "ry": -12
+    }
+   ]
+  }
+ ],
+ "ordre": [
+  "scores-direct",
+  "notification-but",
+  "pronos-potes",
+  "classements-stats",
+  "fan-zone",
+  "fiche-match",
+  "fiche-joueur",
+  "recherche-surnom",
+  "club-favori",
+  "palmares",
+  "comparateur",
+  "mode-sombre"
+ ]
+}

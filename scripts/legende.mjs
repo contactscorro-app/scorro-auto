@@ -5,7 +5,7 @@ const ligueId = (d) => { const m = /ligue-(\d+)/.exec(d.ligue?.logo ?? ''); retu
 export function legende(format, d, pub) {
   const eq = [d.dom?.nom, d.ext?.nom].filter(Boolean);
   const tags = [TAGS_LIGUE[ligueId(d)], ...eq.map(tag), '#foot', '#football', '#Scorro'].filter(Boolean);
-  const t = {
+  const t = ({
     'apres-match': () => `${d.accroche} ${d.dom.buts}-${d.ext.buts}.${d.sousTitre ? ` ${d.sousTitre}.` : ''} Ton homme du match ?`,
     'apres-journee': () => `${d.ligue.texte} : ${d.sousTitre}. Tous les scores et le classement.`,
     'joueurs-journee': () => `Les joueurs de la journée, ${d.ligue.texte}. Qui as-tu préféré ?`,
@@ -13,7 +13,9 @@ export function legende(format, d, pub) {
     'avant-match': () => `${(d.accroche ?? '').replace(/ /g, ' ')}, ${d.jour.split(' · ')[0]} à ${d.heure}. Ton prono : 1, N ou 2 ?`,
     'classement-equipes': () => `Meilleures attaques et meilleures défenses, ${d.ligue.nom}. ${d.sousTitre}.`,
     classement: () => `Top buteurs et passeurs, ${d.ligue.nom}. ${d.sousTitre}.`,
-  }[format]();
-  const appel = pub?.appEnLigne ? "\n\nScorro, dispo sur l'App Store. Lien dans la bio 👆" : '';
-  return `${t}${appel}\n\n${tags.join(' ')}\n`;
+  }[format] ?? (() => d.legende))(); // nouveaux formats : la légende vient du préparateur (data.legende)
+  // Fonctionnalités (23/11) : l'appel à l'action est dans la légende elle-même (« gratuit sur l'App Store ») ; jamais « lien en bio » (pas cliquable sur TikTok).
+  const appel = pub?.appEnLigne && format !== 'f-fonc' ? "\n\nScorro, dispo sur l'App Store. Lien dans la bio 👆" : '';
+  // Mention demandée par l'éditeur (16/11) : les données des vidéos viennent de Sportmonks (couvert par l'abonnement).
+  return `${t}${appel}\n\nDonnées fournies par Sportmonks.\n\n${tags.join(' ')}\n`;
 }

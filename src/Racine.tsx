@@ -12,7 +12,19 @@ import { PresentationTikTok, dureeTikTok } from './PresentationTikTok';
 import { Grain } from './commun';
 import { Couverture } from './Couverture';
 import { Fonctionnalite, dureeFonctionnalite } from './Fonctionnalite';
+import { Createur, dureeCreateur } from './Createur';
 import { Mixage, planSons, planSonsGen } from './Sons';
+import { Top5, Duel, Serie, Trois, Carte, dureesTop5, dureesDuel, dureesSerie, dureesTrois, dureesCarte, somme } from './Formats';
+import { Top5V3, DUREE_TOP5_V3 } from './v3/Top5V3';
+import { VignetteFormat } from './v3/Vignettes';
+import { CarrouselTop5, CarrouselFonc } from './v3/Carrousel';
+import { RecapV3, tempsRecap } from './v3/RecapV3';
+import { ApresMatchV3, tempsApres } from './v3/ApresMatchV3';
+import { StoryAvantV3, DUREE_STORY_AVANT_V3 } from './v3/StoryAvantV3';
+import { DuelV3, tempsDuel } from './v3/DuelV3';
+import { AvantJourneeV3, tempsAvantJournee } from './v3/AvantJourneeV3';
+import { FonctionnaliteV3, VignetteFonc, tempsFonc } from './v3/FonctionnaliteV3';
+import { StoryAvantMatch, StoryApresMatch, DUREE_STORY_AVANT, DUREE_STORY_APRES, sonsStory } from './Story';
 import '@fontsource/inter/500.css';
 import '@fontsource/inter/700.css';
 import '@fontsource/inter/800.css';
@@ -70,10 +82,34 @@ export const Racine: React.FC = () => (
     <Composition id="ApresMatch" component={avecFin(ApresMatch as React.FC<any>, dureeApresMatch, (p, t) => planSons('apres-match', p.fixtureId ?? 0, t, [270], p.fond), 'apres-match')} durationInFrames={675} {...FORMAT} {...selonFin(dureeApresMatch)} />
     <Composition id="ApresJournee" component={avecFin(ApresJournee as React.FC<any>, dureeApresJournee, sonApresJournee, 'apres-journee')} durationInFrames={675} {...FORMAT} {...selonFin(dureeApresJournee)} />
     <Composition id="AvantJournee" component={avecFin(AvantJournee as React.FC<any>, dureeAvantJournee, sonAvantJournee, 'avant-journee')} durationInFrames={675} {...FORMAT} {...selonFin(dureeAvantJournee)} />
+    <Composition id="Createur" component={Createur} durationInFrames={1080} {...FORMAT} {...selon(dureeCreateur)} />
     <Composition id="Presentation" component={Presentation} durationInFrames={825} {...FORMAT} {...selon(dureePresentation)} />
     <Composition id="Fonctionnalite" component={Fonctionnalite} durationInFrames={750} {...FORMAT} {...selon(dureeFonctionnalite)} />
     <Composition id="Couverture" component={Couverture} durationInFrames={1} {...FORMAT} />
     <Composition id="PresentationTikTok" component={PresentationTikTok} durationInFrames={1500} {...FORMAT} {...selon(dureeTikTok)} />
+    {/* Les 5 formats automatiques du planning du 22/11 : durée = somme des scènes ; bruitages : sifflet, whoosh à chaque scène, clameur sur la révélation. */}
+    {([['FormatTop5', Top5, dureesTop5], ['FormatDuel', Duel, dureesDuel], ['FormatSerie', Serie, dureesSerie], ['FormatTrois', Trois, dureesTrois], ['FormatCarte', Carte, dureesCarte]] as [string, React.FC<any>, (p: any) => number[]][]).map(([id, Comp, ds]) => (
+      <Composition key={id} id={id} component={avecFin(Comp, (p) => somme(ds(p)), (p, t) => { const d = ds(p); const coupes = d.slice(0, -1).map((_, i) => somme(d.slice(0, i + 1))); return planSonsGen(id.length * 7, t, coupes, [[coupes[coupes.length - 1] - 60, coupes[coupes.length - 1]]]); }, id)} durationInFrames={600} {...FORMAT} {...selonFin((p) => somme(ds(p)))} />
+    ))}
+    {/* Stories (22/11) : 7 s, sans écran de fin ; même grain que les vidéos. */}
+    <Composition id="StoryAvantMatch" component={(p: any) => (<>{p.sons && <Mixage cues={sonsStory('avant', p.fixtureId ?? 0, DUREE_STORY_AVANT)} />}<StoryAvantMatch {...p} /><Grain /></>)} durationInFrames={DUREE_STORY_AVANT} {...FORMAT} />
+    <Composition id="StoryApresMatch" component={(p: any) => (<>{p.sons && <Mixage cues={sonsStory('apres', p.fixtureId ?? 0, DUREE_STORY_APRES)} />}<StoryApresMatch {...p} /><Grain /></>)} durationInFrames={DUREE_STORY_APRES} {...FORMAT} />
+    {/* Style v3 (22/11) : vidéo test Top 5 + vignettes (image 0 de chaque vidéo, PNG à côté du MP4). */}
+    <Composition id="V3Top5" component={Top5V3} durationInFrames={DUREE_TOP5_V3} {...FORMAT} />
+    <Composition id="V3Recap" component={RecapV3} durationInFrames={900} {...FORMAT} calculateMetadata={async ({ props }: any) => ({ durationInFrames: tempsRecap(props).total })} />
+    <Composition id="V3ApresMatch" component={ApresMatchV3} durationInFrames={600} {...FORMAT} calculateMetadata={async ({ props }: any) => ({ durationInFrames: tempsApres(props).total })} />
+    <Composition id="V3StoryAvant" component={StoryAvantV3} durationInFrames={DUREE_STORY_AVANT_V3} {...FORMAT} />
+    <Composition id="V3StoryApres" component={(p: any) => <ApresMatchV3 {...p} story />} durationInFrames={300} {...FORMAT} calculateMetadata={async ({ props }: any) => ({ durationInFrames: tempsApres({ ...props, story: true }).total })} />
+    <Composition id="V3Duel" component={DuelV3} durationInFrames={500} {...FORMAT} calculateMetadata={async ({ props }: any) => ({ durationInFrames: tempsDuel(props).total })} />
+    <Composition id="V3AvantJournee" component={AvantJourneeV3} durationInFrames={500} {...FORMAT} calculateMetadata={async ({ props }: any) => ({ durationInFrames: tempsAvantJournee(props).total })} />
+    <Composition id="V3Fonctionnalite" component={FonctionnaliteV3} durationInFrames={450} {...FORMAT} calculateMetadata={async ({ props }: any) => ({ durationInFrames: tempsFonc(props).total })} />
+    <Composition id="V3FonctionnaliteVignette" component={(p: any) => <VignetteFonc d={p} />} durationInFrames={1} {...FORMAT} />
+    {/* Carrousel (images) : Instagram 4:5 et TikTok mode photo 9:16. */}
+    <Composition id="CarrouselIG" component={(p: any) => <CarrouselTop5 {...p} haut={1350} />} durationInFrames={1} fps={30} width={1080} height={1350} defaultProps={{}} />
+    <Composition id="CarrouselTT" component={(p: any) => <CarrouselTop5 {...p} haut={1920} />} durationInFrames={1} fps={30} width={1080} height={1920} defaultProps={{}} />
+    <Composition id="CarrouselFoncIG" component={(p: any) => <CarrouselFonc {...p} haut={1350} />} durationInFrames={1} fps={30} width={1080} height={1350} defaultProps={{}} />
+    <Composition id="CarrouselFoncTT" component={(p: any) => <CarrouselFonc {...p} haut={1920} />} durationInFrames={1} fps={30} width={1080} height={1920} defaultProps={{}} />
+    <Composition id="VignetteFormat" component={VignetteFormat as React.FC<any>} durationInFrames={1} {...FORMAT} />
     <Composition id="ClassementJoueurs" component={avecFin(ClassementJoueurs as React.FC<any>, dureeClassement, sonClassement, 'classement')} durationInFrames={675} {...FORMAT} {...selonFin(dureeClassement)} />
   </>
 );

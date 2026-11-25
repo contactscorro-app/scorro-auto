@@ -1,0 +1,123 @@
+{
+ "note": "Série « Les fonctionnalités de Scorro ». Ordre proposé, à valider. Chaque vidéo : 24 à 28 s, même style que la présentation (fond sombre, texte d'accroche en haut, enregistrement du simulateur compte démo en dessous, écran de fin App Store + scorroapp.com). Aucune musique : ambiance de foule + whoosh seulement, après validation des sons. Aucun pseudo réel, aucune photo de joueur en plein écran.",
+ "rythme": "Mardi, jeudi et samedi à 12 h (Paris), un seul créneau par jour, sauf s'il y a un gros match avant 14 h. Compte dans le plafond de 12 par réseau et par jour.",
+ "videos": [
+  {
+   "n": 1,
+   "id": "ligues-pronos",
+   "titre": "Ligue entre potes + pronos",
+   "type": "grosse",
+   "statut": "prête"
+  },
+  {
+   "n": 2,
+   "id": "comparer",
+   "titre": "Comparer : 2 équipes puis 2 joueurs",
+   "type": "grosse",
+   "statut": "v2 faite, à valider"
+  },
+  {
+   "n": 3,
+   "id": "direct",
+   "titre": "Notifications de but",
+   "type": "grosse",
+   "statut": "à filmer au retour des matchs"
+  },
+  {
+   "n": 4,
+   "id": "fiche-match",
+   "titre": "Fiche match",
+   "type": "grosse",
+   "statut": "à filmer"
+  },
+  {
+   "n": 5,
+   "id": "classements",
+   "titre": "Classements en direct",
+   "type": "grosse",
+   "statut": "à filmer"
+  },
+  {
+   "n": 6,
+   "id": "trucs-1",
+   "titre": "3 trucs que tu ne savais pas sur Scorro (centre des transferts, rivalités, affluence des stades)",
+   "type": "groupe",
+   "statut": "v2 faite, à valider"
+  },
+  {
+   "n": 7,
+   "id": "fiche-joueur",
+   "titre": "Fiche joueur et palmarès",
+   "type": "grosse",
+   "statut": "à filmer"
+  },
+  {
+   "n": 8,
+   "id": "fan-zone",
+   "titre": "Fan Zone",
+   "type": "grosse",
+   "statut": "à filmer"
+  },
+  {
+   "n": 9,
+   "id": "trucs-2",
+   "titre": "4 autres trucs (favoris, compos en image à partager, défis de la semaine, 7 langues dont l'arabe)",
+   "type": "groupe",
+   "statut": "à filmer"
+  },
+  {
+   "n": 10,
+   "id": "compo",
+   "titre": "Ma compo (Fais ta compo)",
+   "type": "grosse",
+   "statut": "après la v1.1"
+  }
+ ],
+ "autresIdees": [
+  "Mes compos en image à partager (la compo se transforme en visuel)",
+  "Équipe et joueurs favoris : ton accueil à ton image",
+  "Actus par championnat",
+  "Calendrier : les matchs du jour, de la semaine",
+  "Stats d'un match en direct (possession, tirs)",
+  "Défis de la semaine entre potes"
+ ],
+ "calendrier": [
+  {
+   "date": "2026-11-10",
+   "heure": "12:00",
+   "id": "ligues-pronos",
+   "statut": "prête"
+  },
+  {
+   "date": "2026-11-12",
+   "heure": "12:00",
+   "id": "comparer",
+   "statut": "à valider"
+  },
+  {
+   "date": "2026-11-14",
+   "heure": "12:00",
+   "id": "trucs-1",
+   "statut": "à valider"
+  },
+  {
+   "date": "2026-11-17",
+   "heure": "12:00",
+   "id": "fiche-match",
+   "statut": "à filmer"
+  },
+  {
+   "date": "2026-11-19",
+   "heure": "12:00",
+   "id": "classements",
+   "statut": "à filmer"
+  },
+  {
+   "date": "2026-11-21",
+   "heure": "12:00",
+   "id": "direct",
+   "statut": "à filmer au retour des matchs"
+  }
+ ],
+ "regle": "Les grosses fonctionnalités ont chacune leur vidéo ; les petites (Ce jour-là, centre des transferts, actus par championnat, calendrier…) sont regroupées par 3 ou 4 dans une même vidéo « trucs que tu ne savais pas ». Publication À LA MAIN par l'éditeur (pas de Buffer) : versions SANS-SON et AVEC-MIXAGE + légendes dans a-publier/fonctionnalites/, brouillons Buffer, rappel la veille à 18 h."
+}

@@ -1,0 +1,6 @@
+name = "scorro-posts-reveil"
+main = "worker.js"
+compatibility_date = "2026-10-01"
+# Heures en UTC (Paris = UTC+1 en hiver, UTC+2 en été) — plan du 24/11 : toutes les 5 min de 10 h à 1 h 30 (Paris), toutes les 30 min sinon. 3 déclencheurs sur 5 (plan gratuit).
+[triggers]
+crons = ["*/5 9-23 * * *", "0-30/5 0 * * *", "*/30 1-8 * * *"]

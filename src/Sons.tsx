@@ -34,7 +34,7 @@ function couvrir(fichiers: string[], depart: number, fin: number, volume: number
 const FONDS: Record<string, { fichier: string; volume: number } | null> = { A: { fichier: 'fond-a', volume: 0.09 }, B: null, C: { fichier: 'fond-c', volume: 0.07 }, D: { fichier: 'fond-d', volume: 0.07 } };
 // Plan sonore d'un format. `total` = durée du contenu (sans l'écran de fin), `coupes` = images où la carte change.
 // Règle : aucun son ne s'arrête au milieu d'un écran ; chacun finit sur une transition (fondu de 0,3 s calé sur le whoosh).
-export function planSons(format: 'avant-match' | 'apres-match', id: number, total: number, coupes: number[], fond?: string): Cue[] {
+export function planSons(format: 'avant-match' | 'apres-match', id: number, total: number, coupes: number[], fond?: string, sifflet = true): Cue[] {
   const f = FONDS[fond ?? 'A'];
   const cues: Cue[] = [];
   // Ambiance de foule continue : tout le contenu, puis fondu de 0,3 s sur la transition vers l'écran de fin.

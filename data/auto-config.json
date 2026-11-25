@@ -258,5 +258,135 @@
    "id": 82,
    "jour": "2026-11-19"
   }
- ]
+ ],
+ "rythme": {
+  "actif": true,
+  "depuis": "2026-11-22T15:23:00Z",
+  "_note": "Décision de l'éditeur du 22/11 (rapports/planning-propose-2026-11-17.md) : 1 vidéo par jour et par réseau, 2 les jours de match (Ligue 1, Ligue des champions) : une 12-14 h, une 19-24 h. actif:false = retour à l'ancien programme.",
+  "matin": [
+   "12:00",
+   "14:00"
+  ],
+  "soir": [
+   "19:00",
+   "24:00"
+  ],
+  "maxJour": 1,
+  "maxJourMatch": 2,
+  "liguesJourDeMatch": [
+   301,
+   2
+  ],
+  "sansYoutube": [
+   "classement",
+   "classement-equipes"
+  ],
+  "classementEquipes": {
+   "jourSemaine": 3,
+   "heure": 19,
+   "rotation": [
+    8,
+    564,
+    384,
+    82,
+    301
+   ]
+  }
+ },
+ "stories": {
+  "_note": "Stories avant/après-match (22/11). actif=false : rien n'est rendu. envoi=false : rendues dans a-publier/<jour>/stories/ sans envoi (TikTok toujours à la main). Activer seulement après le rendu de test de nuit et l'accord de l'éditeur. | 23/11 : v3 validées (QA), actif=true en RENDU SEUL (envoi=false), décision de l'éditeur.",
+  "actif": true,
+  "envoi": false,
+  "reseaux": [
+   "instagram-story"
+  ],
+  "maxJour": 8
+ },
+ "formats": {
+  "_note": "Planning des 6 formats validé le 22/11 (rapports/planning-formats-2026-11-23.md). Rendu la nuit avant (22 h - 7 h), jamais pendant un autre rendu ; dépôt dans a-publier/<jour>/formats/ + notification ; envoi=false : AUCUN envoi automatique. Le créneau est réservé : le contenu automatique ne le prend pas. | 22/11 20:50 : actif=false en attendant la bascule v3 (décision de l'éditeur : aucun rendu dans l'ancien style). reserver=true : les créneaux du calendrier restent réservés (le contenu automatique de l'ancien style ne les prend pas) même formats inactifs. | 23/11 12:58 décision de l'éditeur : les formats partent en AUTOMATIQUE via Buffer à leur créneau (actif=true, envoi=true). Seuls les formats déjà en v3 (v3:true dans FORMATS d'auto.mjs) sont rendus ; les autres attendent leur bascule.",
+  "actif": true,
+  "envoi": true,
+  "nuit": [
+   22,
+   7
+  ],
+  "calendrier": [
+   {
+    "date": "2026-11-23",
+    "creneau": "matin",
+    "format": "top5",
+    "ligue": 301
+   },
+   {
+    "date": "2026-11-24",
+    "creneau": "matin",
+    "format": "duel",
+    "ligue": 301
+   },
+   {
+    "date": "2026-11-27",
+    "creneau": "soir",
+    "format": "carte"
+   },
+   {
+    "date": "2026-11-29",
+    "creneau": "matin",
+    "format": "trois",
+    "ligue": 301
+   },
+   {
+    "date": "2026-11-30",
+    "creneau": "matin",
+    "format": "serie",
+    "ligue": 301
+   }
+  ],
+  "reserver": true
+ },
+ "fonctionnalites": {
+  "_note": "Série « Fonctionnalités de l'app » (l'éditeur, 23/11 : Q23 a, Q24 a). Jeudi 19 h et samedi 12 h ; le samedi remplace la capture de l'appli tournée à la main ; jeudi compté comme jour à 2 vidéos. Chaque créneau prend la vidéo suivante de data/fonctionnalites-v3.json (ordre), jamais une déjà montrée. Rendu de JOUR (14 h - 21 h, nuits réservées au lot cours-videos), dans les 4 jours avant, jamais pendant un autre rendu ; puis programmation Buffer au créneau. | 24/11 : renduAuto=false — les vidéos sont rendues à la main (nouvelle banque de bruitages, QA) dans brouillons/fonctionnalites-v3/NN-<id>.mp4 ; l'auto les reprend et les programme.",
+  "actif": true,
+  "debut": "2026-11-26",
+  "creneaux": [
+   {
+    "jourSemaine": 4,
+    "creneau": "soir"
+   },
+   {
+    "jourSemaine": 6,
+    "creneau": "matin"
+   }
+  ],
+  "rendu": {
+   "joursAvant": 4,
+   "heures": [
+    14,
+    21
+   ]
+  },
+  "renduAuto": false
+ },
+ "carrousels": {
+  "_note": "Carrousels (l'éditeur 24/11, Q29 a) : 1 par semaine le LUNDI à 19 h, Instagram + TikTok (photos), EN PLUS des vidéos. Rotation des thèmes ; les thèmes « auto » sont préparés seuls le lundi 14-18 h (données du week-end) puis programmés ; les autres doivent être préparés à la main avant (sinon : rien, et une notification).",
+  "actif": true,
+  "heure": 19,
+  "preparation": [
+   14,
+   18
+  ],
+  "calendrier": {
+   "2026-11-30": "fonc",
+   "2026-12-07": "top5",
+   "2026-12-14": "stats-journee",
+   "2026-12-21": "records",
+   "2026-12-28": "top5"
+  },
+  "auto": [
+   "top5"
+  ]
+ },
+ "publieur": {
+  "_note": "Verrou anti-doublon (plan cloud du 24/11, scripts/verrou.mjs). Serveur : toujours appliqué (publieur.json du dépôt d'état = cloud ET SCORRO_ENVOIS=on, puis vérification de la file Buffer). Mac : appliqué seulement si verifierSurMac = true (à activer au jour 1 du parallèle avec l'accord de l'éditeur) ; publieur.json absent = mac.",
+  "verifierSurMac": false
+ }
 }
