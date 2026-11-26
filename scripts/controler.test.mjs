@@ -230,6 +230,27 @@ test('rythme : créneaux, plafond du jour et contenus gardés', async () => {
   assert.deepEqual(ts.find((x) => x.format === 'classement')?.reseaux, ['instagram', 'tiktok']);
 });
 
+// Q65 = a (26/11) : le récap de soirée de Ligue des champions part le soir même, jusqu'à 1 h du matin, comme celui de la Ligue 1.
+test('rythme : récap de soirée de Ligue des champions permis jusqu\'à 1 h (soirée finie à 22:57)', async () => {
+  const { parisA } = await import('./decider.mjs');
+  const R = { actif: true, depuis: '2026-11-22T00:00:00Z', matin: ['12:00', '14:00'], soir: ['19:00', '24:00'], maxJour: 1, maxJourMatch: 2, liguesJourDeMatch: [301, 2], joursMatch: ['2026-11-25'] };
+  const cfg = { rythme: R };
+  const ldc = { format: 'apres-journee', ligue: 2, jour: '2026-11-25', poids: 5, prioritaire: true };
+  const fin = parisA('2026-11-25', 22) + 57 * 60000, min = 60000;
+  assert.ok(permis(ldc, 'tiktok', [], fin + 60 * min, cfg).ok, '23:57 : permis');
+  assert.ok(permis(ldc, 'tiktok', [], fin + 93 * min, cfg).ok, '00:30 : permis');
+  assert.ok(permis(ldc, 'tiktok', [], fin + 122 * min, cfg).ok, '00:59 : permis');
+  assert.equal(permis(ldc, 'tiktok', [], fin + 123 * min, cfg).raison, 'nuit', '01:00 : plus permis');
+  assert.equal(permis({ ...ldc, ligue: 384 }, 'tiktok', [], fin + 93 * min, cfg).raison, 'nuit', 'autre récap : pas d\'exception');
+  assert.equal(permis({ ...ldc, jour: undefined }, 'tiktok', [], fin + 93 * min, cfg).raison, 'nuit', 'récap LdC sans jour : pas d\'exception');
+  // Les autres règles restent : plafond de 2 par jour et par réseau, un seul envoi par créneau.
+  const deux = [{ reseau: 'tiktok', t: parisA('2026-11-25', 12) }, { reseau: 'tiktok', t: parisA('2026-11-25', 19) }];
+  assert.equal(permis(ldc, 'tiktok', deux, fin + 93 * min, cfg).raison, 'plafond', '00:30 avec 2 envois du jour : plafond');
+  assert.equal(permis(ldc, 'tiktok', [deux[1]], fin + 93 * min, cfg).raison, 'créneau pris', 'soir déjà pris');
+  assert.ok(permis(ldc, 'instagram', deux, fin + 93 * min, cfg).ok, 'plafond compté par réseau');
+  assert.equal(permis(ldc, 'youtube', [{ reseau: 'youtube', t: fin - 6 * HEURE }, { reseau: 'youtube', t: fin - 3 * HEURE }], fin + 60 * min, cfg).raison, 'youtube 24 h');
+});
+
 test('YouTube : 2 envois au plus par 24 h glissantes, les envois refusés ne comptent pas', async () => {
   const { youtubeLibre } = await import('./decider.mjs');
   const h = (n) => Date.parse('2026-11-21T00:00:00Z') + n * HEURE;

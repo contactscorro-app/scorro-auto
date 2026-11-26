@@ -277,8 +277,10 @@ export const joursDeMatch = (matchs, cfg) => [...new Set(matchs.filter((m) => (c
 // Jour de match, ou jour d'une vidéo « fonctionnalité » (jeudi compté comme jour à 2 vidéos, décision du 23/11) : 2 ; sinon 1.
 export const capRythme = (cfg, jour) => ((cfg.rythme.joursMatch ?? []).includes(jour) || creneauxFonc(cfg, jour, jour).some((e) => e.fonc) ? cfg.rythme.maxJourMatch ?? 2 : cfg.rythme.maxJour ?? 1);
 function permisRythme(tache, reseau, pubs, maintenant, cfg) {
-  // Jusqu'à 1 h du matin, seulement pour l'actu chaude : après-match d'un choc et récap de la journée de Ligue 1 (dernier match à 20 h 45 le dimanche).
-  const exception = ((tache.format === 'apres-match' && tache.gros) || (tache.format === 'apres-journee' && tache.ligue === 301 && !tache.jour)) && heureParis(maintenant) < 1;
+  // Jusqu'à 1 h du matin, seulement pour l'actu chaude : après-match d'un choc, récap de la journée de Ligue 1 (dernier match à 20 h 45 le dimanche)
+  // et récap de soirée de Ligue des champions (décision du 26/11, Q65 = a : il part le soir même).
+  const recapChaud = tache.format === 'apres-journee' && ((tache.ligue === 301 && !tache.jour) || (tache.ligue === 2 && !!tache.jour));
+  const exception = ((tache.format === 'apres-match' && tache.gros) || recapChaud) && heureParis(maintenant) < 1;
   if (heureParis(maintenant) < 8 && !exception) return { ok: false, raison: 'nuit' };
   const c = creneauRythme(cfg, maintenant);
   if (!c) return { ok: false, raison: 'hors créneau' };
