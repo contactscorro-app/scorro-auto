@@ -1,6 +1,6 @@
 import React from 'react';
 import { AbsoluteFill, Img, Sequence, interpolate, staticFile, useCurrentFrame, useVideoConfig } from 'remotion';
-import { FinV3, FondV3, Grain, Mots, PALETTES, Sons, Verre, arrivee, doux, flouVitesse, taillePourLargeur, usePolice, vitesse, POLICE, type Pal, type Son } from './kit';
+import { FinV3, FondV3, Grain, Mots, PALETTES, Sons, Verre, arrivee, doux, flouVitesse, taillePourLargeur, usePolice, vitesse, POLICE, type Pal, type Son, FOND_A, SRC_FOND_A } from './kit';
 import { OuvertureVignette, VIGNETTE_FIN } from './Vignettes';
 
 // Avant-journée (Ligue 1), style v3. Données : data/avant-journee-<round>.json (tous les matchs de la journée, rangs au classement).
@@ -82,7 +82,7 @@ const Question: React.FC = () => {
 export const sonsAvantJourneeV3 = (d: any): Son[] => {
   const t = tempsAvantJournee(d), coups = ['sons/v3/pop-1.wav', 'sons/v3/clic-1.wav', 'sons/v3/pop-2.wav', 'sons/v3/clic-2.wav', 'sons/v3/pop-3.wav'];
   return [
-    { f: 0, src: 'sons/fond-a.mp3', volume: 0.45, duree: t.F },
+    { f: 0, src: SRC_FOND_A, volume: FOND_A, duree: t.F }, // fond léger 0,08 (Q60 = a)
     { f: VIGNETTE_FIN, src: 'sons/sifflet-court.mp3', volume: 0.15, duree: 40 },
     { f: H0 + 26, src: 'sons/v3/impact-1.wav', volume: 0.15 },
     { f: R1, src: 'sons/whoosh-2.mp3', volume: 0.2, duree: 30 },

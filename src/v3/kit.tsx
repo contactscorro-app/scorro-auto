@@ -90,11 +90,21 @@ export type Son = { f: number; src: string; volume: number; duree?: number; vite
 // avec 2 corrections seulement : l'avance AAC de 43 ms (normaliser-son.mjs) et AUCUN FOND CONTINU. Ce filtre retire au rendu tout son continu
 // (fond, nappe, ambiance, stade, tribunes, foule, clameur, applaudissements), quel que soit le format ou le chemin qui l'a demandé.
 export const CONTINU = /(^|\/)(nappes?\/|nappe|fond|ambiance|stade|tribunes|foule|clameur|applaudissements)/;
-export const estContinu = (b: Son) => CONTINU.test(b.src);
+// SEULE EXCEPTION (l'éditeur 25/11 18:54 ; Q60 = a, 25/11 20:44) : le fond léger fond-a (ambiance légère, oiseaux) du Top 5 du 23/11, « discret »,
+// au niveau bas du Top 5 (FOND_A = 0,08), dans le Top 5, le récap, l'avant-journée et les stories seulement (les autres formats ne le demandent pas) ;
+// son volume est ramené à FOND_A quel que soit le chiffre demandé (jamais le 0,45 d'avant).
+export const FOND_A = 0.08;
+export const SRC_FOND_A = 'sons/fond-a.mp3';
+export const estFondA = (b: Son) => b.src === SRC_FOND_A;
+export const estContinu = (b: Son) => !estFondA(b) && CONTINU.test(b.src);
+export const sonsJoues = (liste: Son[]): Son[] => liste.filter((b) => !estContinu(b)).map((b) => (estFondA(b) ? { ...b, volume: Math.min(b.volume, FOND_A) } : b)).sort((a, b) => a.f - b.f);
+// Q59 = OUI (l'éditeur 25/11 20:44, branché 26/11) : le whoosh (fichier de 1,33 s) est coupé à 1,0 s (duree 30) ; fondu de sortie de 0,2 s (6 images) sur la fin au lieu d une coupe nette.
+export const FONDU_WHOOSH = 6;
+export const fonduFin = (b: Son) => (b.src === 'sons/whoosh-2.mp3' ? FONDU_WHOOSH : 0);
 export const Sons: React.FC<{ liste: Son[] }> = ({ liste }) => {
-  const tri = liste.filter((b) => !estContinu(b)).sort((a, b) => a.f - b.f);
+  const tri = sonsJoues(liste);
   for (let i = 1; i < tri.length; i++) if (tri[i].src === tri[i - 1].src && !tri[i].src.startsWith('sons/fond') && !/\/(texte|chiffres)\/(frappe|tic)/.test(tri[i].src)) throw new Error(`bruitage répété deux fois de suite : ${tri[i].src} (${tri[i - 1].f}, ${tri[i].f})`);
-  return <>{tri.map((b, i) => <Sequence key={i} from={Math.max(0, b.f)} durationInFrames={b.duree ?? 45}><Audio src={staticFile(b.src)} volume={b.volume} playbackRate={b.vitesse ?? 1} /></Sequence>)}</>;
+  return <>{tri.map((b, i) => { const d = b.duree ?? 45, n = fonduFin(b); return <Sequence key={i} from={Math.max(0, b.f)} durationInFrames={d}><Audio src={staticFile(b.src)} volume={n > 0 ? (x: number) => b.volume * Math.min(1, Math.max(0, (d - x) / n)) : b.volume} playbackRate={b.vitesse ?? 1} /></Sequence>; })}</>;
 };
 export const Grain: React.FC = () => { const f = useCurrentFrame(); return <AbsoluteFill style={{ pointerEvents: 'none', backgroundImage: `url(${staticFile('grain.png')})`, backgroundPosition: `${(f * 211) % 1080}px ${(f * 347) % 1920}px`, opacity: 0.7 }} />; };
 

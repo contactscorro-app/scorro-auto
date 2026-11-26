@@ -176,7 +176,9 @@ async function traiter(t) {
   if (props !== F.data(t)) fs.rmSync(props, { force: true });
   if (!r.ok || !fs.existsSync(temp)) throw new Error(`rendu : ${dernier(r.sortie)}`);
   // Son final à −16 LUFS (règle de l'éditeur du 22/11), image copiée telle quelle. En cas d'échec : la vidéo garde son son d'origine, une ligne dans ERREURS.txt.
-  if (cfg.lufs !== false) { const n = lancer(process.execPath, ['scripts/normaliser-son.mjs', temp, String(cfg.lufs ?? -16)]); if (!n.ok) erreur(t.cle, `son non normalisé : ${dernier(n.sortie)}`); }
+  // Q60 = a (l'éditeur 25/11 20:44) : récap, avant-journée et stories (fond léger fond-a à 0,08) en mode crête : gain linéaire, crête −2 dBTP, ≈ −21 LUFS, sans compression.
+  const modeCrete = ['apres-journee', 'avant-journee', 'story-avant', 'story-apres'].includes(t.format);
+  if (cfg.lufs !== false) { const n = lancer(process.execPath, ['scripts/normaliser-son.mjs', temp, String(cfg.lufs ?? -16), ...(modeCrete ? ['--crete'] : [])]); if (!n.ok) erreur(t.cle, `son non normalisé : ${dernier(n.sortie)}`); }
   const { dureeFichier } = await import('./controle-video.mjs');
   const dureeRendue = dureeFichier(temp);
   if (!(Math.abs(dureeRendue - dureePrevue) <= 1)) { fs.rmSync(temp, { force: true }); throw new Error(`GARDE-FOU : fichier rendu de ${dureeRendue} s au lieu de ${dureePrevue.toFixed(2)} s prévues (±1 s), vidéo jetée`); }

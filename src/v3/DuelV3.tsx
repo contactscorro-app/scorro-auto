@@ -87,7 +87,6 @@ const Question: React.FC = () => {
 export const sonsDuelV3 = (d: any): Son[] => {
   const t = tempsDuel(d), coups = ['sons/v3/pop-1.wav', 'sons/v3/impact-1.wav', 'sons/v3/pop-2.wav', 'sons/v3/impact-2.wav', 'sons/v3/pop-3.wav'];
   return [
-    { f: 0, src: 'sons/fond-a.mp3', volume: 0.45, duree: t.F },
     { f: H0 + 30, src: 'sons/v3/clic-1.wav', volume: 0.16 },
     { f: R1, src: 'sons/whoosh-2.mp3', volume: 0.2, duree: 30 },
     { f: C0 + 8, src: 'sons/v3/impact-2.wav', volume: 0.16 },

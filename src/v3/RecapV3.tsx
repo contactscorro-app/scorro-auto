@@ -1,6 +1,6 @@
 import React from 'react';
 import { AbsoluteFill, Img, Sequence, interpolate, staticFile, useCurrentFrame, useVideoConfig } from 'remotion';
-import { FinV3, FondV3, Grain, Mots, PALETTES, Sons, Verre, arrivee, doux, flouVitesse, taillePourLargeur, usePolice, vitesse, POLICE, type Pal, type Son } from './kit';
+import { FinV3, FondV3, Grain, Mots, PALETTES, Sons, Verre, arrivee, doux, flouVitesse, taillePourLargeur, usePolice, vitesse, POLICE, type Pal, type Son, FOND_A, SRC_FOND_A } from './kit';
 import { OuvertureVignette, VIGNETTE_FIN } from './Vignettes';
 
 // Récap de journée (Ligue 1) ou de soirée (Ligue des champions), style v3. Données : data/apres-journee-<round>.json (scores recoupés).
@@ -124,8 +124,8 @@ export const sonsRecapV3 = (d: any): Son[] => {
   const t = tempsRecap(d);
   const coups = ['sons/v3/impact-1.wav', 'sons/v3/pop-2.wav', 'sons/v3/impact-2.wav', 'sons/v3/pop-1.wav'];
   return [
-    // Foule continue assez présente (fond-a mesuré à −24 LUFS) : sans elle, les bruitages courts empêchent d'atteindre −16 LUFS sans saturer.
-    { f: 0, src: 'sons/fond-a.mp3', volume: 0.45, duree: t.F },
+    // Fond léger fond-a au niveau bas du Top 5 du 23/11 (0,08 ; l'éditeur 25/11 18:54, Q60 = a : vidéo ≈ −21 LUFS, normaliser-son.mjs --crete).
+    { f: 0, src: SRC_FOND_A, volume: FOND_A, duree: t.F },
     { f: VIGNETTE_FIN, src: 'sons/sifflet-court.mp3', volume: 0.15, duree: 40 },
     { f: H0 + 26, src: 'sons/v3/clic-1.wav', volume: 0.18 },
     { f: R1, src: 'sons/whoosh-2.mp3', volume: 0.22, duree: 30 },

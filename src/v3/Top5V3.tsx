@@ -1,7 +1,7 @@
 import React from 'react';
 import { AbsoluteFill, Img, Sequence, interpolate, staticFile, useCurrentFrame, useVideoConfig } from 'remotion';
 import { Photo } from '../commun';
-import { FinV3, FondV3, Grain, Mots, PALETTES, Sons, Verre, arrivee, doux, flouVitesse, taillePourLargeur, usePolice, vitesse, POLICE, type Pal, type Son } from './kit';
+import { FinV3, FondV3, Grain, Mots, PALETTES, Sons, Verre, arrivee, doux, flouVitesse, taillePourLargeur, usePolice, vitesse, POLICE, type Pal, type Son, FOND_A, SRC_FOND_A } from './kit';
 import { VignetteFormat } from './Vignettes';
 
 // ① Top 5 buteurs, style v3 (vidéo test du 22/11). Données : data/format-top5-<ligue>.json (recoupé avec /topscorers).
@@ -109,7 +109,7 @@ const Ouverture: React.FC<{ d: any }> = ({ d }) => {
   return <AbsoluteFill style={{ opacity: 1 - k, transform: `scale(${1 + 0.18 * k})`, filter: k > 0.02 ? `blur(${k * 18}px)` : undefined }}><VignetteFormat format="top5" data={d} /></AbsoluteFill>;
 };
 export const sonsTop5V3 = (n = 5): Son[] => [
-  { f: 0, src: 'sons/fond-a.mp3', volume: 0.08, duree: FIN },
+  { f: 0, src: SRC_FOND_A, volume: FOND_A, duree: FIN }, // comme le 23/11
   { f: V, src: 'sons/whoosh-2.mp3', volume: 0.22, duree: 30 },
   { f: H0, src: 'sons/v3/pop-1.wav', volume: 0.2 },
   { f: H0 + 30, src: 'sons/v3/clic-1.wav', volume: 0.18 },

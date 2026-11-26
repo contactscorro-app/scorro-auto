@@ -1,6 +1,6 @@
 import React from 'react';
 import { AbsoluteFill, Img, Sequence, interpolate, staticFile, useCurrentFrame, useVideoConfig } from 'remotion';
-import { FinV3, FondV3, Grain, Mots, PALETTES, Sons, Verre, arrivee, doux, flouVitesse, taillePourLargeur, usePolice, vitesse, POLICE, type Pal, type Son } from './kit';
+import { FinV3, FondV3, Grain, Mots, PALETTES, Sons, Verre, arrivee, doux, flouVitesse, taillePourLargeur, usePolice, vitesse, POLICE, type Pal, type Son, FOND_A, SRC_FOND_A } from './kit';
 import { OuvertureVignette, VIGNETTE_FIN } from './Vignettes';
 import { planBruitages, NAPPES, VOLUME_NAPPE } from './sons';
 
@@ -136,7 +136,8 @@ export const sonsStoryApresFluide = (d: any): Son[] => {
 export const sonsApresV3 = (d: any): Son[] => {
   const t = tempsApres(d);
   return [
-    { f: 0, src: 'sons/fond-a.mp3', volume: 0.45, duree: t.F },
+    // Fond léger fond-a 0,08 : story après-match seulement (Q60 = a) ; la vidéo après-match reste sans fond.
+    ...(d.story ? [{ f: 0, src: SRC_FOND_A, volume: FOND_A, duree: t.F }] : []),
     { f: VIGNETTE_FIN, src: 'sons/sifflet-court.mp3', volume: 0.15, duree: 40 },
     { f: H0 + 28, src: 'sons/v3/clic-1.wav', volume: 0.16 },
     { f: R1, src: 'sons/whoosh-2.mp3', volume: 0.2, duree: 30 },

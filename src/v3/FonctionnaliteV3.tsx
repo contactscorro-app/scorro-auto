@@ -144,7 +144,6 @@ const Ouverture: React.FC<{ d: Fonc }> = ({ d }) => {
 export const sonsFoncAncien = (d: Fonc): Son[] => {
   const t = tempsFonc(d);
   return [
-    { f: 0, src: 'sons/fond-a.mp3', volume: 0.4, duree: t.C + 10 },
     { f: V, src: 'sons/v3/pop-1.wav', volume: 0.16 },
     { f: H0 + 26, src: 'sons/v3/clic-1.wav', volume: 0.16 },
     { f: R1, src: 'sons/whoosh-2.mp3', volume: 0.2, duree: 30 },
