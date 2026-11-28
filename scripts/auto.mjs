@@ -251,7 +251,7 @@ for (const c of Object.keys(etat.faites)) {
 }
 etat.vusDue ??= {};
 const avantOk = (c) => (etat.faites[c] ? reel(c) : !etat.vusDue[c]);
-const dues = taches(etat.calendrier?.matchs ?? [], cfg, maintenant, { vusFinis: etat.finis, engages, avantOk }).filter((t) => (arg('seulement') ? t.cle === arg('seulement') : true)).sort((a, b) => b.poids - a.poids || a.de - b.de);
+const dues = taches(etat.calendrier?.matchs ?? [], cfg, maintenant, { vusFinis: etat.finis, engages, avantOk, pubs: etat.pubs }).filter((t) => (arg('seulement') ? t.cle === arg('seulement') : true)).sort((a, b) => b.poids - a.poids || a.de - b.de);
 // Envois YouTube refusés plus tard par Buffer (à l'heure prévue) : lus en LECTURE SEULE au plus toutes les 30 min, quand une vidéo attend YouTube ; marqués echec pour ne pas compter dans la limite des 24 h.
 async function marquerEchecsYoutube() {
   if (!Object.values(etat.file).some((f) => f.restants?.includes('youtube')) || maintenant - (etat.syncEchecsYt ?? 0) < 30 * MIN) return;

@@ -275,7 +275,9 @@
   "maxJourMatch": 2,
   "liguesJourDeMatch": [
    301,
-   2
+   2,
+   8,
+   564
   ],
   "sansYoutube": [
    "classement",
@@ -291,6 +293,18 @@
     82,
     301
    ]
+  },
+  "choix": {
+   "_note": "Choix des sujets (l'éditeur, chat 28/11 13:45) : Ligue 1 + Premier League + Liga en avant-journée et récap ; 2 vidéos/jour/réseau au plus, 1 à midi + 1 le soir ; plusieurs sujets pour un créneau = le meilleur score (scoreSujet, scripts/decider.mjs) ; récap reporté au lendemain sinon il saute ; jamais à moins de 2 h du carrousel. actif:false = règle d'avant (Ligue 1 seule).",
+   "actif": true,
+   "liguesJournee": [
+    301,
+    8,
+    564
+   ],
+   "minMatchsJournee": 6,
+   "minRecapMin": 30,
+   "ecartCarrouselH": 2
   }
  },
  "stories": {
@@ -303,7 +317,7 @@
   "maxJour": 8
  },
  "formats": {
-  "_note": "Planning des 6 formats validé le 22/11 (rapports/planning-formats-2026-11-23.md). Rendu la nuit avant (22 h - 7 h), jamais pendant un autre rendu ; dépôt dans a-publier/<jour>/formats/ + notification ; envoi=false : AUCUN envoi automatique. Le créneau est réservé : le contenu automatique ne le prend pas. | 22/11 20:50 : actif=false en attendant la bascule v3 (décision de l'éditeur : aucun rendu dans l'ancien style). reserver=true : les créneaux du calendrier restent réservés (le contenu automatique de l'ancien style ne les prend pas) même formats inactifs. | 23/11 12:58 décision de l'éditeur : les formats partent en AUTOMATIQUE via Buffer à leur créneau (actif=true, envoi=true). Seuls les formats déjà en v3 (v3:true dans FORMATS d'auto.mjs) sont rendus ; les autres attendent leur bascule.",
+  "_note": "Planning des 6 formats validé le 22/11 (rapports/planning-formats-2026-11-23.md). Rendu la nuit avant (22 h - 7 h), jamais pendant un autre rendu ; dépôt dans a-publier/<jour>/formats/ + notification ; envoi=false : AUCUN envoi automatique. Le créneau est réservé : le contenu automatique ne le prend pas. | 22/11 20:50 : actif=false en attendant la bascule v3 (décision de l'éditeur : aucun rendu dans l'ancien style). reserver=true : les créneaux du calendrier restent réservés (le contenu automatique de l'ancien style ne les prend pas) même formats inactifs. | 23/11 12:58 décision de l'éditeur : les formats partent en AUTOMATIQUE via Buffer à leur créneau (actif=true, envoi=true). Seuls les formats déjà en v3 (v3:true dans FORMATS d'auto.mjs) sont rendus ; les autres attendent leur bascule. | 28/11 (l'éditeur, Q-ligues-1 = a) : formats.v3 = formats déjà en v3 ; seuls ceux-là gardent leur créneau. Les autres (carte, trois, série) le laissent à la règle de score (choix des sujets). Ajouter un format ici quand il passe en v3 (FORMATS d auto.mjs).",
   "actif": true,
   "envoi": true,
   "nuit": [
@@ -341,7 +355,11 @@
     "ligue": 301
    }
   ],
-  "reserver": true
+  "reserver": true,
+  "v3": [
+   "top5",
+   "duel"
+  ]
  },
  "fonctionnalites": {
   "_note": "Série « Fonctionnalités de l'app » (l'éditeur, 23/11 : Q23 a, Q24 a). Jeudi 19 h et samedi 12 h ; le samedi remplace la capture de l'appli tournée à la main ; jeudi compté comme jour à 2 vidéos. Chaque créneau prend la vidéo suivante de data/fonctionnalites-v3.json (ordre), jamais une déjà montrée. Rendu de JOUR (14 h - 21 h, nuits réservées au lot cours-videos), dans les 4 jours avant, jamais pendant un autre rendu ; puis programmation Buffer au créneau. | 24/11 : renduAuto=false — les vidéos sont rendues à la main (nouvelle banque de bruitages, QA) dans brouillons/fonctionnalites-v3/NN-<id>.mp4 ; l'auto les reprend et les programme.",
